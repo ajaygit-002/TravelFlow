@@ -228,6 +228,9 @@ export default function Currencies() {
     };
   }, [filtered]);
 
+  // Popular currencies for quick multi-convert
+  const popularCodes = ['USD', 'EUR', 'GBP', 'JPY', 'INR', 'AUD', 'CAD', 'CHF'];
+
   // Converter
   const convertedValue = useMemo(() => {
     const fromRate = currencies.find((c) => c.code === convertFrom)?.rate || 1;
@@ -235,6 +238,28 @@ export default function Currencies() {
     const amt = parseFloat(convertAmount) || 0;
     return ((amt / fromRate) * toRate).toFixed(4);
   }, [convertAmount, convertFrom, convertTo]);
+
+  // Multi-currency quick convert results
+  const quickConvertResults = useMemo(() => {
+    const amt = parseFloat(convertAmount) || 0;
+    if (amt <= 0) return [];
+    const fromRate = currencies.find((c) => c.code === convertFrom)?.rate || 1;
+    return popularCodes
+      .filter((code) => code !== convertFrom)
+      .map((code) => {
+        const target = currencies.find((c) => c.code === code);
+        if (!target) return null;
+        const converted = (amt / fromRate) * target.rate;
+        return {
+          code: target.code,
+          flag: target.flag,
+          symbol: target.symbol,
+          name: target.name,
+          value: converted,
+        };
+      })
+      .filter(Boolean);
+  }, [convertAmount, convertFrom]);
 
   // ===== DETAIL PANEL — SMOOTH OPEN =====
   const handleSelect = useCallback((currency) => {
@@ -380,6 +405,7 @@ export default function Currencies() {
                     onChange={(e) => setConvertAmount(e.target.value)}
                     min="0"
                     step="any"
+                    placeholder="Enter amount"
                   />
                   <select
                     value={convertFrom}
@@ -409,6 +435,29 @@ export default function Currencies() {
                 <div className="converter-result">
                   {convertAmount || '0'} {convertFrom} = {convertedValue} {convertTo}
                 </div>
+
+                {/* Quick Convert to multiple currencies */}
+                {quickConvertResults.length > 0 && (
+                  <div className="quick-convert-multi">
+                    <div className="quick-convert-heading">Converted to popular currencies</div>
+                    <div className="quick-convert-list">
+                      {quickConvertResults.map((r) => (
+                        <div className="quick-convert-item" key={r.code}>
+                          <div className="quick-convert-left">
+                            <span className="quick-convert-flag">{r.flag}</span>
+                            <span className="quick-convert-code">{r.code}</span>
+                          </div>
+                          <div className="quick-convert-value">
+                            {r.symbol}{' '}
+                            {r.value < 1
+                              ? r.value.toFixed(4)
+                              : r.value.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
