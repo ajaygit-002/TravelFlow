@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="1440" height="900">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1a3a5c"/>
+      <stop offset="100%" stop-color="#0d1b2a"/>
+    </radialGradient>
+    <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2F80ED" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#2F80ED" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#F2994A" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#F2994A" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur">
+      <feGaussianBlur stdDeviation="2"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1440" height="900" fill="url(#bg)"/>
+  
+  <!-- Grid lines for 3D map feel -->
+  <g stroke="#2F80ED" stroke-opacity="0.08" stroke-width="0.5" fill="none">
+    <line x1="0" y1="150" x2="1440" y2="150"/>
+    <line x1="0" y1="300" x2="1440" y2="300"/>
+    <line x1="0" y1="450" x2="1440" y2="450"/>
+    <line x1="0" y1="600" x2="1440" y2="600"/>
+    <line x1="0" y1="750" x2="1440" y2="750"/>
+    <line x1="240" y1="0" x2="240" y2="900"/>
+    <line x1="480" y1="0" x2="480" y2="900"/>
+    <line x1="720" y1="0" x2="720" y2="900"/>
+    <line x1="960" y1="0" x2="960" y2="900"/>
+    <line x1="1200" y1="0" x2="1200" y2="900"/>
+  </g>
+
+  <!-- Simplified continents as abstract shapes -->
+  <!-- North America -->
+  <path d="M180,200 Q220,180 280,200 Q340,220 360,280 Q350,340 300,380 Q260,400 220,380 Q180,340 160,300 Q160,240 180,200Z" 
+        fill="#2F80ED" fill-opacity="0.15" stroke="#2F80ED" stroke-opacity="0.2" stroke-width="1"/>
+  <!-- South America -->
+  <path d="M300,420 Q330,400 350,430 Q370,480 360,540 Q340,600 310,620 Q280,610 270,560 Q260,500 280,460Z" 
+        fill="#56CCF2" fill-opacity="0.12" stroke="#56CCF2" stroke-opacity="0.18" stroke-width="1"/>
+  <!-- Europe -->
+  <path d="M620,180 Q660,160 700,180 Q740,200 750,240 Q740,280 700,300 Q660,310 630,290 Q610,260 610,220Z" 
+        fill="#2F80ED" fill-opacity="0.15" stroke="#2F80ED" stroke-opacity="0.2" stroke-width="1"/>
+  <!-- Africa -->
+  <path d="M660,340 Q700,320 740,350 Q770,400 760,470 Q740,540 700,570 Q660,560 640,500 Q630,440 640,380Z" 
+        fill="#F2994A" fill-opacity="0.12" stroke="#F2994A" stroke-opacity="0.18" stroke-width="1"/>
+  <!-- Asia -->
+  <path d="M820,160 Q900,140 980,170 Q1050,200 1080,270 Q1070,340 1020,380 Q960,400 900,380 Q840,340 820,280 Q810,220 820,160Z" 
+        fill="#2F80ED" fill-opacity="0.15" stroke="#56CCF2" stroke-opacity="0.2" stroke-width="1"/>
+  <!-- Australia -->
+  <path d="M1050,500 Q1100,480 1140,500 Q1170,530 1160,570 Q1130,600 1090,600 Q1050,580 1040,550 Q1040,520 1050,500Z" 
+        fill="#56CCF2" fill-opacity="0.12" stroke="#56CCF2" stroke-opacity="0.18" stroke-width="1"/>
+
+  <!-- Glow effects -->
+  <ellipse cx="400" cy="300" rx="200" ry="180" fill="url(#glow1)"/>
+  <ellipse cx="900" cy="350" rx="250" ry="200" fill="url(#glow2)"/>
+
+  <!-- Flight routes -->
+  <g fill="none" stroke="#F2994A" stroke-width="1.5" stroke-dasharray="8,6" stroke-opacity="0.5">
+    <path d="M280,280 Q500,120 700,240"/>
+    <path d="M700,240 Q820,180 900,250"/>
+    <path d="M350,450 Q550,300 700,350"/>
+    <path d="M900,300 Q1000,400 1100,530"/>
+  </g>
+
+  <!-- Map pins -->
+  <g>
+    <!-- Pin 1 - NYC -->
+    <circle cx="280" cy="270" r="6" fill="#F2994A" fill-opacity="0.8"/>
+    <circle cx="280" cy="270" r="10" fill="none" stroke="#F2994A" stroke-opacity="0.4" stroke-width="1.5"/>
+    <!-- Pin 2 - London -->
+    <circle cx="640" cy="210" r="6" fill="#F2994A" fill-opacity="0.8"/>
+    <circle cx="640" cy="210" r="10" fill="none" stroke="#F2994A" stroke-opacity="0.4" stroke-width="1.5"/>
+    <!-- Pin 3 - Tokyo -->
+    <circle cx="1040" cy="250" r="6" fill="#F2994A" fill-opacity="0.8"/>
+    <circle cx="1040" cy="250" r="10" fill="none" stroke="#F2994A" stroke-opacity="0.4" stroke-width="1.5"/>
+    <!-- Pin 4 - Dubai -->
+    <circle cx="820" cy="330" r="6" fill="#F2994A" fill-opacity="0.8"/>
+    <circle cx="820" cy="330" r="10" fill="none" stroke="#F2994A" stroke-opacity="0.4" stroke-width="1.5"/>
+    <!-- Pin 5 - Sydney -->
+    <circle cx="1100" cy="540" r="6" fill="#F2994A" fill-opacity="0.8"/>
+    <circle cx="1100" cy="540" r="10" fill="none" stroke="#F2994A" stroke-opacity="0.4" stroke-width="1.5"/>
+    <!-- Pin 6 - São Paulo -->
+    <circle cx="340" cy="520" r="6" fill="#F2994A" fill-opacity="0.8"/>
+    <circle cx="340" cy="520" r="10" fill="none" stroke="#F2994A" stroke-opacity="0.4" stroke-width="1.5"/>
+  </g>
+
+  <!-- Small stars / dots -->
+  <g fill="#fff" fill-opacity="0.15">
+    <circle cx="100" cy="100" r="1.5"/>
+    <circle cx="350" cy="80" r="1"/>
+    <circle cx="550" cy="120" r="1.5"/>
+    <circle cx="800" cy="90" r="1"/>
+    <circle cx="1100" cy="130" r="1.5"/>
+    <circle cx="1300" cy="80" r="1"/>
+    <circle cx="150" cy="700" r="1"/>
+    <circle cx="500" cy="750" r="1.5"/>
+    <circle cx="900" cy="700" r="1"/>
+    <circle cx="1200" cy="750" r="1.5"/>
+    <circle cx="1350" cy="400" r="1"/>
+    <circle cx="50" cy="450" r="1.5"/>
+  </g>
+</svg>

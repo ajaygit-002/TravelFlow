@@ -1,0 +1,52 @@
+/* ===== PAGE-LEVEL STYLES ===== */
+
+/* About page responsive */
+@media (max-width: 768px) {
+  .about-content {
+    grid-template-columns: 1fr !important;
+    gap: 30px !important;
+  }
+}
+
+/* Contact form responsive */
+.contact-form-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+}
+
+@media (max-width: 768px) {
+  .contact-form-wrapper {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Input focus */
+.contact-form-wrapper input:focus,
+.contact-form-wrapper textarea:focus {
+  border-color: var(--primary-blue) !important;
+  box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.1);
+}
+
+/* Featured destination section */
+.featured-dest-section {
+  background: var(--white);
+}
+
+.featured-dest-section .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Smooth transitions for all interactive elements */
+.card,
+.dest-card,
+.btn,
+.nav-link,
+.footer-social,
+.footer-link {
+  transition: all 0.3s ease;
+}
