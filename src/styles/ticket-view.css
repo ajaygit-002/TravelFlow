@@ -1,0 +1,396 @@
+/* ===== TICKET VIEW PAGE ===== */
+.tv-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0d1b2a 0%, #1a3a5c 50%, #2F80ED 100%);
+  padding: 40px 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.tv-container {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Brand */
+.tv-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.tv-brand-logo {
+  font-size: 2rem;
+}
+
+.tv-brand-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+/* Status */
+.tv-status {
+  text-align: center;
+}
+
+.tv-status-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.tv-status-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.tv-status-sub {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+/* Card */
+.tv-card {
+  width: 100%;
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Header */
+.tv-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 24px;
+  background: linear-gradient(135deg, #0d1b2a, #1b2d4a);
+  color: #fff;
+}
+
+.tv-airline-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.tv-flight-num {
+  font-size: 0.8rem;
+  opacity: 0.65;
+  margin-top: 2px;
+}
+
+.tv-badge {
+  background: #22c55e;
+  color: #fff;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+/* Route */
+.tv-route {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 24px;
+}
+
+.tv-route-pt {
+  text-align: center;
+  flex: 1;
+}
+
+.tv-route-code {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #0d1b2a;
+  letter-spacing: 1px;
+}
+
+.tv-route-city {
+  font-size: 0.78rem;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.tv-route-time {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2F80ED;
+  margin-top: 6px;
+}
+
+.tv-route-mid {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tv-route-line {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 4px;
+}
+
+.tv-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2F80ED;
+  flex-shrink: 0;
+}
+
+.tv-track {
+  flex: 1;
+  height: 2px;
+  background: repeating-linear-gradient(
+    to right,
+    #2F80ED 0,
+    #2F80ED 6px,
+    transparent 6px,
+    transparent 10px
+  );
+}
+
+.tv-plane {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+/* Tear */
+.tv-tear {
+  display: flex;
+  align-items: center;
+}
+
+.tv-tear-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0d1b2a, #1a3a5c);
+  flex-shrink: 0;
+}
+
+.tv-tear-left {
+  margin-left: -12px;
+}
+
+.tv-tear-right {
+  margin-right: -12px;
+}
+
+.tv-tear-dashed {
+  flex: 1;
+  border-top: 2px dashed #d1d5db;
+}
+
+/* Details */
+.tv-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 24px;
+}
+
+.tv-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tv-detail-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.tv-detail strong {
+  font-size: 0.92rem;
+  color: #0d1b2a;
+  word-break: break-word;
+}
+
+.tv-detail-highlight {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, rgba(47, 128, 237, 0.08), rgba(86, 204, 242, 0.08));
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+
+.tv-detail-highlight strong {
+  font-size: 1.1rem;
+  color: #2F80ED;
+}
+
+/* Booking ID */
+.tv-booking-id {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.tv-booking-id span {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.tv-booking-id strong {
+  font-size: 0.85rem;
+  color: #0d1b2a;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
+/* Barcode */
+.tv-barcode {
+  text-align: center;
+  padding: 8px 24px 0;
+  font-size: 0.5rem;
+  letter-spacing: 2px;
+  color: #0d1b2a;
+  opacity: 0.3;
+  overflow: hidden;
+}
+
+.tv-barcode-id {
+  text-align: center;
+  padding: 4px 24px 20px;
+  font-size: 0.7rem;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+/* Footer */
+.tv-footer {
+  text-align: center;
+}
+
+.tv-footer p {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 16px;
+}
+
+.tv-btn {
+  display: inline-block;
+  padding: 14px 32px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.tv-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Error state */
+.tv-error {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.tv-error-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.tv-error h2 {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.tv-error p {
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 24px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 520px) {
+  .tv-page {
+    padding: 24px 12px;
+  }
+
+  .tv-route-code {
+    font-size: 1.5rem;
+  }
+
+  .tv-route {
+    padding: 20px 16px;
+  }
+
+  .tv-details {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 20px 16px;
+  }
+
+  .tv-card-header {
+    padding: 18px 16px;
+  }
+
+  .tv-booking-id {
+    padding: 12px 16px;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+
+  .tv-status-title {
+    font-size: 1.3rem;
+  }
+
+  .tv-brand-name {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .tv-route-code {
+    font-size: 1.2rem;
+  }
+
+  .tv-route-city {
+    font-size: 0.7rem;
+  }
+
+  .tv-airline-name {
+    font-size: 0.95rem;
+  }
+
+  .tv-detail strong {
+    font-size: 0.82rem;
+  }
+
+  .tv-card {
+    border-radius: 18px;
+  }
+}

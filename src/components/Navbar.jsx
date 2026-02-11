@@ -5,7 +5,7 @@ import '../styles/navbar.css';
 const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
-  { name: 'Services', path: '/#services' },
+  { name: 'Flights', path: '/flights' },
   { name: 'Destinations', path: '/destinations' },
   { name: 'Currencies', path: '/currencies' },
   { name: 'Contact', path: '/contact' },
@@ -59,7 +59,7 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
-          <Link to="/contact" className="nav-cta">
+          <Link to="/get-started" className="nav-cta">
             Get Started
           </Link>
         </div>
@@ -90,7 +90,7 @@ export default function Navbar() {
             {link.name}
           </Link>
         ))}
-        <Link to="/contact" className="btn btn-primary btn-sm" onClick={() => setMobileOpen(false)}>
+        <Link to="/get-started" className="btn btn-primary btn-sm" onClick={() => setMobileOpen(false)}>
           Get Started
         </Link>
       </div>

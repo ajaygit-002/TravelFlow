@@ -11,6 +11,9 @@ import HelpCenter from './pages/HelpCenter';
 import FAQs from './pages/FAQs';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import GetStarted from './pages/GetStarted';
+import FlightBooking from './pages/FlightBooking';
+import TicketView from './pages/TicketView';
 
 const router = createBrowserRouter([
   {
@@ -28,6 +31,9 @@ const router = createBrowserRouter([
       { path: 'faqs', element: <FAQs /> },
       { path: 'privacy', element: <PrivacyPolicy /> },
       { path: 'terms', element: <TermsOfService /> },
+      { path: 'get-started', element: <GetStarted /> },
+      { path: 'flights', element: <FlightBooking /> },
+      { path: 'ticket', element: <TicketView /> },
     ],
   },
 ]);
