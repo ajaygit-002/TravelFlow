@@ -39,10 +39,10 @@ const coreServices = [
 ];
 
 const processSteps = [
-  { icon: '🔍', title: 'Search', desc: 'Tell us where & when you want to go' },
-  { icon: '📋', title: 'Compare', desc: 'Review the best options curated for you' },
-  { icon: '💳', title: 'Book', desc: 'Secure your trip with one-click payment' },
-  { icon: '🎉', title: 'Travel', desc: 'Enjoy your journey with full support' },
+  { icon: '🔍', title: 'Search', desc: '' },
+  { icon: '📋', title: 'Compare', desc: '' },
+  { icon: '💳', title: 'Book', desc: '' },
+  { icon: '🎉', title: 'Travel', desc: '' },
 ];
 
 const stats = [
@@ -51,6 +51,7 @@ const stats = [
   { value: '99.8%', label: 'Satisfaction Rate', icon: '⭐' },
   { value: '24/7', label: 'Support Available', icon: '🎧' },
 ];
+
 
 const testimonials = [
   {
@@ -345,17 +346,20 @@ export default function Services() {
       {/* ======= HOW IT WORKS — PROCESS ======= */}
       <section className="section svc-process">
         <div className="container">
-          <h2 className="section-title svc-process-title">How It Works</h2>
-          <p className="section-subtitle">
-            Four simple steps from dreaming to departing.
-          </p>
+          <div className="svc-process-header">
+            <span className="svc-process-tag">🚀 How It Works</span>
+            <h2 className="section-title svc-process-title">How It Works</h2>
+            <p className="section-subtitle svc-process-subtitle">
+              Four simple steps from dreaming to departing.
+            </p>
+          </div>
           <div className="svc-process-track">
             <div className="svc-process-line">
               <div className="svc-process-line-fill" />
             </div>
             {processSteps.map((step, i) => (
               <div className="svc-step" key={i}>
-                <div className="svc-step-number">{String(i + 1).padStart(2, '0')}</div>
+                <div className="svc-step-number">{String(i + 1).padStart(3, '0')}</div>
                 <div className="svc-step-icon">{step.icon}</div>
                 <h4 className="svc-step-title">{step.title}</h4>
                 <p className="svc-step-desc">{step.desc}</p>

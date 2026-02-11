@@ -259,23 +259,51 @@
   background: var(--white);
 }
 
+/* Centered header — matches "Why Choose Us" style */
+.svc-process-header {
+  max-width: 620px;
+  margin: 0 auto 56px;
+  text-align: center;
+}
+
+.svc-process-tag {
+  display: inline-block;
+  background: linear-gradient(135deg, rgba(47, 128, 237, 0.08), rgba(86, 204, 242, 0.08));
+  color: var(--primary-blue);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 7px 20px;
+  border-radius: 99px;
+  margin-bottom: 18px;
+}
+
 .svc-process-title {
   will-change: transform, opacity;
+  text-align: center;
+}
+
+.svc-process-subtitle {
+  text-align: center;
 }
 
 .svc-process-track {
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 28px;
   padding-top: 40px;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 .svc-process-line {
   position: absolute;
   top: 78px;
-  left: 10%;
-  right: 10%;
+  left: calc(50px + 10px);
+  right: calc(50px + 10px);
   height: 3px;
   background: #e5e7eb;
   border-radius: 2px;
@@ -290,12 +318,15 @@
   border-radius: 2px;
   transform-origin: left;
 }
-
+/* this */
 .svc-step {
   position: relative;
   z-index: 1;
+  display: flex;
   text-align: center;
   will-change: transform, opacity;
+  flex: 1;
+  max-width: 240px;
 }
 
 .svc-step-number {
@@ -609,13 +640,23 @@
   }
 
   .svc-process-track {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 40px 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px 28px;
     padding-top: 20px;
+  }
+
+  .svc-step {
+    flex: 0 0 calc(50% - 20px);
+    max-width: calc(50% - 20px);
   }
 
   .svc-process-line {
     display: none;
+  }
+
+  .svc-process-header {
+    margin-bottom: 40px;
   }
 
   .svc-stats-grid {
@@ -678,7 +719,23 @@
   }
 
   .svc-process-track {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+  }
+
+  .svc-step {
+    flex: 0 0 100%;
+    max-width: 320px;
+  }
+
+  .svc-process-header {
+    margin-bottom: 32px;
+  }
+
+  .svc-process-tag {
+    font-size: 0.72rem;
+    padding: 6px 16px;
   }
 
   .svc-stats {
