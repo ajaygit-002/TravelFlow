@@ -1259,7 +1259,97 @@
 
 /* Actions */
 .fb-eticket-actions {
-  margin-top: 20px;
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.fb-view-ticket-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+}
+
+.fb-view-ticket-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(34, 197, 94, 0.4);
+}
+
+.fb-secondary-btn {
+  background: transparent !important;
+  border: 2px solid var(--primary-blue) !important;
+  color: var(--primary-blue) !important;
+  box-shadow: none !important;
+}
+
+.fb-secondary-btn:hover {
+  background: rgba(47, 128, 237, 0.08) !important;
+}
+
+/* Boarding Info Strip */
+.fb-eticket-boarding-strip {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  padding: 0 20px;
+  margin-bottom: 4px;
+}
+
+.fb-eticket-boarding-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  flex: 1;
+  min-width: 0;
+}
+
+.fb-eticket-boarding-item:first-child { border-radius: 12px 0 0 12px; }
+.fb-eticket-boarding-item:last-child { border-radius: 0 12px 12px 0; }
+
+.fb-eticket-boarding-item span {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #9ca3af;
+  text-transform: uppercase;
+}
+
+.fb-eticket-boarding-item strong {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--dark);
+  letter-spacing: 0.5px;
+}
+
+.fb-eticket-boarding-item:nth-child(2),
+.fb-eticket-boarding-item:nth-child(3) {
+  background: linear-gradient(135deg, var(--primary-blue), #1a6dd4);
+}
+
+.fb-eticket-boarding-item:nth-child(2) span,
+.fb-eticket-boarding-item:nth-child(3) span {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.fb-eticket-boarding-item:nth-child(2) strong,
+.fb-eticket-boarding-item:nth-child(3) strong {
+  color: #fff;
 }
 
 /* ===== RESPONSIVE ===== */
@@ -1630,6 +1720,35 @@
   .fb-eticket-qr svg {
     width: 140px !important;
     height: 140px !important;
+  }
+
+  .fb-eticket-boarding-strip {
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 0 12px;
+  }
+
+  .fb-eticket-boarding-item {
+    flex: 1 1 calc(33% - 4px);
+    min-width: 60px;
+    padding: 10px 8px;
+  }
+
+  .fb-eticket-boarding-item strong {
+    font-size: 0.9rem;
+  }
+
+  .fb-eticket-actions {
+    gap: 10px;
+  }
+
+  .fb-view-ticket-btn,
+  .fb-eticket-actions .fb-confirm-btn {
+    padding: 12px 20px;
+    font-size: 0.88rem;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
   }
 
   .fb-steps-indicator {

@@ -208,11 +208,32 @@ export default function FlightBooking() {
       .fromTo('.fb-fullpage-grid', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 }, '+=0.1');
   }, []);
 
+  // Generate realistic boarding pass info
+  const [boardingInfo, setBoardingInfo] = useState(null);
+
   // Payment success → show ticket with QR
   const handlePaymentSuccess = useCallback(() => {
     const id = `TF-${selectedFlight?.id}-${Date.now().toString(36).toUpperCase()}`;
     setBookingId(id);
     setPaymentMethod('Card / UPI');
+
+    // Generate realistic gate, seat, terminal, boarding time
+    const gates = ['A1','A2','A3','A5','A7','B1','B2','B4','B6','C1','C3','C5','D2','D4','D8','E1','E3'];
+    const terminals = ['T1','T2','T3','T4','T5'];
+    const rows = Array.from({ length: 30 }, (_, i) => i + 1);
+    const seats = ['A','B','C','D','E','F'];
+    const depHour = parseInt(selectedFlight?.departure?.split(':')[0] || '10', 10);
+    const boardingHour = depHour > 0 ? depHour - 1 : 23;
+    const boardingMin = Math.floor(Math.random() * 4) * 15; // 0, 15, 30, 45
+
+    setBoardingInfo({
+      gate: gates[Math.floor(Math.random() * gates.length)],
+      terminal: terminals[Math.floor(Math.random() * terminals.length)],
+      seat: `${rows[Math.floor(Math.random() * rows.length)]}${seats[Math.floor(Math.random() * seats.length)]}`,
+      boardingTime: `${String(boardingHour).padStart(2, '0')}:${String(boardingMin).padStart(2, '0')}`,
+      zone: Math.floor(Math.random() * 5) + 1,
+      sequence: String(Math.floor(Math.random() * 200) + 1).padStart(3, '0'),
+    });
 
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
     tl.to('.fb-payment-wrap', { opacity: 0, scale: 0.95, duration: 0.3 })
@@ -238,19 +259,28 @@ export default function FlightBooking() {
       phone: bookingForm.phone,
       flight: selectedFlight.flightNumber,
       airline: selectedFlight.airline.name,
+      airlineLogo: selectedFlight.airline.logo,
       from: `${selectedFlight.origin.code} - ${selectedFlight.origin.city}`,
       to: `${selectedFlight.destination.code} - ${selectedFlight.destination.city}`,
       departure: selectedFlight.departure,
       arrival: selectedFlight.arrival,
+      duration: selectedFlight.duration,
+      stops: selectedFlight.stops,
       date: bookingForm.date,
       class: cabinClasses.find((c) => c.id === cabinClass)?.name,
       passengers,
       aircraft: selectedFlight.aircraft,
       totalPaid: `${currObj.symbol}${toLocal(selectedTotal)} ${currency}`,
+      gate: boardingInfo?.gate,
+      terminal: boardingInfo?.terminal,
+      seat: boardingInfo?.seat,
+      boardingTime: boardingInfo?.boardingTime,
+      zone: boardingInfo?.zone,
+      sequence: boardingInfo?.sequence,
     };
     const encoded = btoa(encodeURIComponent(JSON.stringify(ticketInfo)));
     return `${window.location.origin}/ticket?d=${encoded}`;
-  }, [selectedFlight, bookingId, bookingForm, cabinClass, passengers, currObj, toLocal, selectedTotal, currency]);
+  }, [selectedFlight, bookingId, bookingForm, cabinClass, passengers, currObj, toLocal, selectedTotal, currency, boardingInfo]);
 
   return (
     <div className="fb-page" ref={pageRef}>
@@ -672,9 +702,9 @@ export default function FlightBooking() {
                   <div className="fb-eticket-wrap">
                     <div className="fb-eticket-icon">🎉</div>
                     <h2 className="fb-eticket-title">Booking Confirmed!</h2>
-                    <p className="fb-eticket-sub">Your e-ticket & QR code are ready. Scan the QR to view your details.</p>
+                    <p className="fb-eticket-sub">Your boarding pass & QR code are ready. Scan the QR to view your ticket online.</p>
 
-                    {/* E-Ticket Card */}
+                    {/* Boarding Pass Card */}
                     <div className="fb-eticket-card">
                       {/* Ticket header */}
                       <div className="fb-eticket-header">
@@ -685,7 +715,7 @@ export default function FlightBooking() {
                             <div className="fb-eticket-flight-num">{selectedFlight.flightNumber}</div>
                           </div>
                         </div>
-                        <div className="fb-eticket-badge">E-TICKET</div>
+                        <div className="fb-eticket-badge">BOARDING PASS</div>
                       </div>
 
                       {/* Route */}
@@ -715,6 +745,32 @@ export default function FlightBooking() {
                         </div>
                       </div>
 
+                      {/* Boarding Info Strip */}
+                      {boardingInfo && (
+                        <div className="fb-eticket-boarding-strip">
+                          <div className="fb-eticket-boarding-item">
+                            <span>GATE</span>
+                            <strong>{boardingInfo.gate}</strong>
+                          </div>
+                          <div className="fb-eticket-boarding-item">
+                            <span>SEAT</span>
+                            <strong>{boardingInfo.seat}</strong>
+                          </div>
+                          <div className="fb-eticket-boarding-item">
+                            <span>ZONE</span>
+                            <strong>{boardingInfo.zone}</strong>
+                          </div>
+                          <div className="fb-eticket-boarding-item">
+                            <span>TERMINAL</span>
+                            <strong>{boardingInfo.terminal}</strong>
+                          </div>
+                          <div className="fb-eticket-boarding-item">
+                            <span>BOARDING</span>
+                            <strong>{boardingInfo.boardingTime}</strong>
+                          </div>
+                        </div>
+                      )}
+
                       {/* Tear line */}
                       <div className="fb-eticket-tear">
                         <div className="fb-eticket-tear-circle fb-eticket-tear-left" />
@@ -727,14 +783,6 @@ export default function FlightBooking() {
                         <div className="fb-confirm-detail">
                           <span>Passenger</span>
                           <strong>{bookingForm.name}</strong>
-                        </div>
-                        <div className="fb-confirm-detail">
-                          <span>Email</span>
-                          <strong>{bookingForm.email}</strong>
-                        </div>
-                        <div className="fb-confirm-detail">
-                          <span>Phone</span>
-                          <strong>{bookingForm.phone}</strong>
                         </div>
                         <div className="fb-confirm-detail">
                           <span>Travel Date</span>
@@ -753,8 +801,8 @@ export default function FlightBooking() {
                           <strong>{selectedFlight.aircraft}</strong>
                         </div>
                         <div className="fb-confirm-detail">
-                          <span>Payment</span>
-                          <strong>Paid ✓</strong>
+                          <span>Sequence</span>
+                          <strong>{boardingInfo?.sequence || '—'}</strong>
                         </div>
                         <div className="fb-confirm-detail fb-confirm-detail-total">
                           <span>Total Paid</span>
@@ -771,17 +819,17 @@ export default function FlightBooking() {
                         <div className="fb-eticket-qr">
                           <QRCodeSVG
                             value={qrData}
-                            size={200}
+                            size={180}
                             bgColor="#ffffff"
                             fgColor="#0d1b2a"
                             level="M"
                             includeMargin={true}
                           />
                         </div>
-                        <p className="fb-eticket-qr-label">Scan QR to view passenger & flight details</p>
+                        <p className="fb-eticket-qr-label">Scan to view your e-ticket online</p>
                       </div>
 
-                      {/* Barcode */}
+                      {/* Barcode + ID */}
                       <div className="fb-eticket-barcode">
                         {'▮'.repeat(45)}
                       </div>
@@ -789,7 +837,20 @@ export default function FlightBooking() {
                     </div>
 
                     <div className="fb-eticket-actions">
-                      <button className="fb-confirm-btn" onClick={closeBooking}>
+                      {qrData && (
+                        <a
+                          href={qrData}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="fb-view-ticket-btn"
+                        >
+                          🎫 View Full E-Ticket
+                        </a>
+                      )}
+                      <button className="fb-confirm-btn" onClick={() => window.print()}>
+                        🖨️ Print Boarding Pass
+                      </button>
+                      <button className="fb-confirm-btn fb-secondary-btn" onClick={closeBooking}>
                         ✈️ Search More Flights
                       </button>
                     </div>

@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { gsap } from 'gsap';
+import { QRCodeSVG } from 'qrcode.react';
 import destinations from '../data/destinations';
 import PaymentGateway from '../components/PaymentGateway';
 import Footer from '../components/Footer';
@@ -21,11 +22,36 @@ export default function Booking() {
   const [phone, setPhone] = useState('');
   const [showPayment, setShowPayment] = useState(false);
   const [bookingComplete, setBookingComplete] = useState(false);
+  const [bookingId, setBookingId] = useState('');
 
   // Price calculations
   const basePrice = dest ? dest.price * travelers : 0;
   const gstAmount = basePrice * GST_RATE;
   const totalPrice = basePrice + gstAmount;
+
+  // QR code data — encodes a URL that opens the ticket view page when scanned
+  const qrData = useMemo(() => {
+    if (!dest || !bookingId) return '';
+    const ticketInfo = {
+      type: 'trip',
+      bookingId,
+      passenger: fullName,
+      email,
+      phone,
+      destination: dest.name,
+      country: dest.country,
+      flag: dest.flag,
+      duration: dest.duration,
+      date: travelDate,
+      travelers,
+      totalPaid: `$${totalPrice.toFixed(2)}`,
+      included: dest.included?.slice(0, 6) || [],
+      tagline: dest.tagline,
+      thumb: dest.thumb,
+    };
+    const encoded = btoa(encodeURIComponent(JSON.stringify(ticketInfo)));
+    return `${window.location.origin}/ticket?d=${encoded}`;
+  }, [dest, bookingId, fullName, email, phone, travelDate, travelers, totalPrice]);
 
   useEffect(() => {
     if (!dest || !pageRef.current) return;
@@ -60,16 +86,17 @@ export default function Booking() {
   };
 
   const handlePaymentSuccess = () => {
+    const id = `TF-${dest.id?.toUpperCase().slice(0, 4)}-${Date.now().toString(36).toUpperCase()}`;
+    setBookingId(id);
+
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
     tl.to('.payment-gateway', { opacity: 0, scale: 0.9, duration: 0.4 })
       .call(() => setBookingComplete(true))
-      .fromTo('.bk-success', { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.6 }, '+=0.1')
-      .fromTo('.bk-success-icon', { scale: 0, rotate: -180 }, { scale: 1, rotate: 0, duration: 0.7, ease: 'back.out(1.7)' }, '-=0.3')
-      .fromTo('.bk-success-content > *', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.1 }, '-=0.2')
-      .fromTo('.bk-confetti-piece', { opacity: 0, y: -100, scale: 0 }, {
-        opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.03,
-        ease: 'bounce.out',
-      }, '-=0.5');
+      .fromTo('.bk-ticket-wrap', { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.6 }, '+=0.1')
+      .fromTo('.bk-ticket-icon', { scale: 0, rotate: -180 }, { scale: 1, rotate: 0, duration: 0.7, ease: 'back.out(1.7)' }, '-=0.3')
+      .fromTo('.bk-ticket-card', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.2')
+      .fromTo('.bk-ticket-qr', { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.5)' }, '-=0.2')
+      .fromTo('.bk-ticket-detail', { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.3, stagger: 0.05 }, '-=0.15');
   };
 
   const handleBackToForm = () => {
@@ -102,52 +129,134 @@ export default function Booking() {
         </div>
       </div>
 
-      {/* Booking Complete */}
+      {/* Booking Complete — Trip Ticket */}
       {bookingComplete && (
-        <div className="bk-success">
-          <div className="bk-confetti">
-            {Array.from({ length: 20 }).map((_, i) => (
-              <span
-                className="bk-confetti-piece"
-                key={i}
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  background: ['#2F80ED', '#56CCF2', '#F2994A', '#27AE60', '#F2C94C', '#EB5757'][i % 6],
-                  animationDelay: `${Math.random() * 2}s`,
-                  animationDuration: `${2 + Math.random() * 2}s`,
-                }}
-              />
-            ))}
+        <div className="bk-ticket-wrap">
+          <div className="bk-ticket-icon">🎉</div>
+          <h2 className="bk-ticket-title">Trip Booked Successfully!</h2>
+          <p className="bk-ticket-subtitle">Your travel voucher & QR code are ready below.</p>
+
+          {/* Trip Voucher Card */}
+          <div className="bk-ticket-card">
+            {/* Card Header with destination image */}
+            <div className="bk-ticket-header">
+              <img className="bk-ticket-header-img" src={dest.heroImage} alt={dest.name} />
+              <div className="bk-ticket-header-overlay" />
+              <div className="bk-ticket-header-content">
+                <div className="bk-ticket-dest-row">
+                  <div>
+                    <div className="bk-ticket-dest-name">{dest.flag} {dest.name}</div>
+                    <div className="bk-ticket-dest-sub">{dest.country} · {dest.tagline}</div>
+                  </div>
+                  <div className="bk-ticket-badge">CONFIRMED</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Trip Info Strip */}
+            <div className="bk-ticket-strip">
+              <div className="bk-ticket-strip-item">
+                <span>DURATION</span>
+                <strong>{dest.duration}</strong>
+              </div>
+              <div className="bk-ticket-strip-item bk-ticket-strip-highlight">
+                <span>TRAVEL DATE</span>
+                <strong>{travelDate}</strong>
+              </div>
+              <div className="bk-ticket-strip-item bk-ticket-strip-highlight">
+                <span>TRAVELERS</span>
+                <strong>{travelers}</strong>
+              </div>
+              <div className="bk-ticket-strip-item">
+                <span>RATING</span>
+                <strong>⭐ {dest.rating}</strong>
+              </div>
+            </div>
+
+            {/* Tear line */}
+            <div className="bk-ticket-tear">
+              <div className="bk-ticket-tear-circle bk-ticket-tear-left" />
+              <div className="bk-ticket-tear-line" />
+              <div className="bk-ticket-tear-circle bk-ticket-tear-right" />
+            </div>
+
+            {/* Lower section: Details + QR */}
+            <div className="bk-ticket-lower">
+              {/* Passenger details */}
+              <div className="bk-ticket-details">
+                <div className="bk-ticket-detail">
+                  <span>GUEST NAME</span>
+                  <strong>{fullName}</strong>
+                </div>
+                <div className="bk-ticket-detail">
+                  <span>EMAIL</span>
+                  <strong>{email}</strong>
+                </div>
+                <div className="bk-ticket-detail">
+                  <span>PHONE</span>
+                  <strong>{phone}</strong>
+                </div>
+                <div className="bk-ticket-detail">
+                  <span>PACKAGE</span>
+                  <strong>{dest.duration} · {dest.name}</strong>
+                </div>
+
+                {/* What's included */}
+                <div className="bk-ticket-included">
+                  <span>INCLUDES</span>
+                  <div className="bk-ticket-included-tags">
+                    {dest.included?.slice(0, 6).map((item, i) => (
+                      <span key={i} className="bk-ticket-tag">✓ {item}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bk-ticket-detail bk-ticket-detail-total">
+                  <span>TOTAL PAID</span>
+                  <strong>${totalPrice.toFixed(2)}</strong>
+                </div>
+              </div>
+
+              {/* QR Code */}
+              <div className="bk-ticket-qr-section">
+                <div className="bk-ticket-qr">
+                  <QRCodeSVG
+                    value={qrData}
+                    size={160}
+                    bgColor="#ffffff"
+                    fgColor="#0d1b2a"
+                    level="M"
+                    includeMargin
+                  />
+                </div>
+                <p className="bk-ticket-qr-label">Scan to view voucher</p>
+              </div>
+            </div>
+
+            {/* Booking ID Bar */}
+            <div className="bk-ticket-id-bar">
+              <span>BOOKING REFERENCE</span>
+              <strong>{bookingId}</strong>
+            </div>
+
+            {/* Barcode */}
+            <div className="bk-ticket-barcode">{'▮'.repeat(48)}</div>
+            <div className="bk-ticket-barcode-id">{bookingId}</div>
           </div>
-          <div className="bk-success-icon">✓</div>
-          <div className="bk-success-content">
-            <h2>Booking Confirmed! 🎉</h2>
-            <p className="bk-success-msg">
-              Your trip to <strong>{dest.name}</strong> has been booked successfully.
-              A confirmation email has been sent to <strong>{email}</strong>.
-            </p>
-            <div className="bk-success-details">
-              <div className="bk-success-detail">
-                <span className="bk-success-label">Booking ID</span>
-                <span className="bk-success-value">TF-{Date.now().toString(36).toUpperCase()}</span>
-              </div>
-              <div className="bk-success-detail">
-                <span className="bk-success-label">Travel Date</span>
-                <span className="bk-success-value">{travelDate}</span>
-              </div>
-              <div className="bk-success-detail">
-                <span className="bk-success-label">Travelers</span>
-                <span className="bk-success-value">{travelers}</span>
-              </div>
-              <div className="bk-success-detail">
-                <span className="bk-success-label">Total Paid</span>
-                <span className="bk-success-value bk-success-total">${totalPrice.toFixed(2)}</span>
-              </div>
-            </div>
-            <div className="bk-success-actions">
-              <button className="btn btn-primary btn-lg" onClick={() => navigate('/')}>Back to Home</button>
-              <button className="btn btn-outline btn-lg" onClick={() => navigate('/destinations')}>Explore More</button>
-            </div>
+
+          {/* Action buttons */}
+          <div className="bk-ticket-actions">
+            {qrData && (
+              <a href={qrData} target="_blank" rel="noopener noreferrer" className="bk-ticket-btn bk-ticket-btn-view">
+                🎫 View Full Voucher
+              </a>
+            )}
+            <button className="bk-ticket-btn bk-ticket-btn-print" onClick={() => window.print()}>
+              🖨️ Print Voucher
+            </button>
+            <Link to="/destinations" className="bk-ticket-btn bk-ticket-btn-outline">
+              🌍 Explore More Destinations
+            </Link>
           </div>
         </div>
       )}
