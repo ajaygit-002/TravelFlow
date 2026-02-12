@@ -5,45 +5,40 @@ export default function CurrencyCard({ currency, index, onSelect }) {
 
   return (
     <div
-      className="currency-card gsap-3d-enter"
+      className="currency-card"
       data-index={index}
+      data-region={currency.region}
       onClick={() => onSelect(currency)}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => e.key === 'Enter' && onSelect(currency)}
+      style={{ '--accent': colors.primary, '--accent-gradient': colors.gradient }}
     >
+      {/* Animated border glow */}
+      <div className="card-glow" />
+
       <div className="currency-card-inner">
-        {/* Front */}
-        <div
-          className="currency-card-front"
-          style={{ '--card-color': colors.primary }}
-        >
-          <div
-            style={{
-              position: 'absolute',
-              top: '-40%',
-              right: '-20%',
-              width: '180px',
-              height: '180px',
-              borderRadius: '50%',
-              background: colors.primary,
-              opacity: 0.06,
-              pointerEvents: 'none',
-            }}
-          />
+        {/* ===== FRONT ===== */}
+        <div className="currency-card-front">
+          {/* Top accent strip */}
+          <div className="card-accent-strip" />
+
+          {/* Decorative circle */}
+          <div className="card-deco-circle" />
+
+          {/* Shimmer overlay */}
+          <div className="card-shimmer" />
+
           <div className="card-front-top">
             <span className="card-flag">{currency.flag}</span>
-            <span
-              className="card-code"
-              style={{ background: colors.gradient }}
-            >
-              {currency.code}
-            </span>
+            <span className="card-code">{currency.code}</span>
           </div>
+
           <div className="card-front-mid">
             <div className="card-currency-name">{currency.name}</div>
             <div className="card-country">{currency.country}</div>
           </div>
+
           <div className="card-front-bottom">
             <span className="card-symbol">{currency.symbol}</span>
             <div className="card-rate">
@@ -52,16 +47,17 @@ export default function CurrencyCard({ currency, index, onSelect }) {
                   ? currency.rate.toFixed(4)
                   : currency.rate.toLocaleString()}
               </div>
-              <span>per USD</span>
+              <span className="card-rate-label">per USD</span>
             </div>
           </div>
+
+          {/* Region pill */}
+          <div className="card-region-pill">{currency.region}</div>
         </div>
 
-        {/* Back */}
-        <div
-          className="currency-card-back"
-          style={{ background: colors.gradient }}
-        >
+        {/* ===== BACK ===== */}
+        <div className="currency-card-back">
+          <div className="card-back-pattern" />
           <div className="card-back-flag">{currency.flag}</div>
           <div className="card-back-name">{currency.name}</div>
           <div className="card-back-code">{currency.code} — {currency.country}</div>

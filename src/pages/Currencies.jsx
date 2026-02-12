@@ -19,6 +19,7 @@ export default function Currencies() {
   const gridRef = useRef(null);
   const pageRef = useRef(null);
   const heroAnimated = useRef(false);
+  const prevFilteredLength = useRef(0);
 
   // Nav scroll effect
   useEffect(() => {
@@ -26,38 +27,56 @@ export default function Currencies() {
     return () => { if (cleanup) cleanup(); };
   }, []);
 
-  // ===== SMOOTH PAGE ENTRANCE =====
+  // ===== CINEMATIC PAGE ENTRANCE =====
   useEffect(() => {
     if (heroAnimated.current) return;
     heroAnimated.current = true;
 
     const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
-    // Hero entrance
+    // Hero background fade
     tl.fromTo('.currency-hero',
       { opacity: 0 },
-      { opacity: 1, duration: 0.6 }
-    )
-    .fromTo('.currency-hero .section-title',
-      { opacity: 0, y: 40, clipPath: 'inset(0 0 100% 0)' },
-      { opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)', duration: 0.8 },
-      '-=0.3'
-    )
-    .fromTo('.currency-hero .section-subtitle',
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.6 },
+      { opacity: 1, duration: 0.8 }
+    );
+
+    // Particles fade in
+    tl.fromTo('.hero-particle',
+      { opacity: 0, scale: 0 },
+      { opacity: 1, scale: 1, duration: 0.6, stagger: 0.06 },
+      '-=0.5'
+    );
+
+    // Title reveal with clip path
+    tl.fromTo('.currency-hero .section-title',
+      { opacity: 0, y: 50, clipPath: 'inset(0 0 100% 0)' },
+      { opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)', duration: 1, ease: 'power4.out' },
       '-=0.4'
     );
 
-    // Controls entrance
+    // Subtitle slide up
+    tl.fromTo('.currency-hero .section-subtitle',
+      { opacity: 0, y: 25 },
+      { opacity: 1, y: 0, duration: 0.7 },
+      '-=0.5'
+    );
+
+    // Stats bar count up
+    tl.fromTo('.hero-stat',
+      { opacity: 0, y: 20, scale: 0.8 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.1, ease: 'back.out(1.5)' },
+      '-=0.3'
+    );
+
+    // Search bar + filters cascade
     tl.fromTo('.currency-search',
       { opacity: 0, y: 20, scale: 0.97 },
       { opacity: 1, y: 0, scale: 1, duration: 0.5 },
       '-=0.2'
     )
     .fromTo('.filter-btn',
-      { opacity: 0, y: 12, scale: 0.9 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.4, stagger: 0.05 },
+      { opacity: 0, y: 14, scale: 0.85 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.45, stagger: 0.04, ease: 'back.out(1.4)' },
       '-=0.3'
     )
     .fromTo('.currency-count',
@@ -66,18 +85,18 @@ export default function Currencies() {
       '-=0.2'
     );
 
-    // Sidebar entrance
+    // Sidebar entrance with depth
     gsap.fromTo('.sidebar-card',
-      { opacity: 0, x: -30 },
+      { opacity: 0, x: -40, rotateY: 5 },
       {
-        opacity: 1, x: 0, duration: 0.7, ease: 'power3.out',
+        opacity: 1, x: 0, rotateY: 0, duration: 0.8, ease: 'power3.out',
         scrollTrigger: { trigger: '.sidebar-card', start: 'top 90%' }
       }
     );
     gsap.fromTo('.sidebar-converter',
-      { opacity: 0, x: -30 },
+      { opacity: 0, x: -40, rotateY: 5 },
       {
-        opacity: 1, x: 0, duration: 0.7, delay: 0.15, ease: 'power3.out',
+        opacity: 1, x: 0, rotateY: 0, duration: 0.8, delay: 0.15, ease: 'power3.out',
         scrollTrigger: { trigger: '.sidebar-converter', start: 'top 90%' }
       }
     );
@@ -98,6 +117,14 @@ export default function Currencies() {
     });
   }, [search, activeRegion]);
 
+  // Smooth count badge pulse on filter change
+  useEffect(() => {
+    gsap.fromTo('.currency-count span',
+      { scale: 1.3, color: '#2F80ED' },
+      { scale: 1, color: '#2F80ED', duration: 0.4, ease: 'back.out(2)' }
+    );
+  }, [filtered.length]);
+
   // Region stats
   const regionStats = useMemo(() => {
     const stats = {};
@@ -111,7 +138,7 @@ export default function Currencies() {
     return stats;
   }, []);
 
-  // ===== SMOOTH 3D SCROLL ANIMATION FOR CARDS =====
+  // ===== PROFESSIONAL 3D CARD ANIMATIONS =====
   useEffect(() => {
     if (!gridRef.current) return;
 
@@ -123,102 +150,162 @@ export default function Currencies() {
     const cards = gridRef.current.querySelectorAll('.currency-card');
     if (!cards.length) return;
 
-    // Initial state: cards hidden with gentle 3D offset
-    gsap.set(cards, {
-      opacity: 0,
-      y: 50,
-      scale: 0.92,
-      rotateX: 8,
-      transformPerspective: 1000,
-      transformOrigin: 'center bottom',
-      willChange: 'transform, opacity',
-    });
+    // Determine if this is a filter change (animate differently)
+    const isFilterChange = prevFilteredLength.current > 0 && prevFilteredLength.current !== cards.length;
+    prevFilteredLength.current = cards.length;
 
-    // Smooth staggered reveal on scroll
-    ScrollTrigger.batch(cards, {
-      id: 'curr-batch',
-      start: 'top 88%',
-      batchMax: 6,
-      onEnter: (batch) => {
-        gsap.to(batch, {
+    if (isFilterChange) {
+      // FILTER TRANSITION: Quick scale-in with shuffle feel
+      gsap.set(cards, {
+        opacity: 0,
+        scale: 0.85,
+        y: 20,
+        rotateX: 0,
+        transformPerspective: 1000,
+      });
+      gsap.to(cards, {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'back.out(1.4)',
+        stagger: {
+          each: 0.025,
+          grid: 'auto',
+          from: 'center',
+        },
+        overwrite: 'auto',
+      });
+    } else {
+      // INITIAL LOAD: Cinematic 3D wave entrance
+      gsap.set(cards, {
+        opacity: 0,
+        y: 60,
+        scale: 0.88,
+        rotateX: 10,
+        rotateY: -3,
+        transformPerspective: 1200,
+        transformOrigin: 'center bottom',
+        willChange: 'transform, opacity',
+      });
+
+      // Cards in viewport — immediate stagger
+      const visibleCards = Array.from(cards).filter(card => {
+        const rect = card.getBoundingClientRect();
+        return rect.top < window.innerHeight + 100;
+      });
+      const offscreenCards = Array.from(cards).filter(card => {
+        const rect = card.getBoundingClientRect();
+        return rect.top >= window.innerHeight + 100;
+      });
+
+      if (visibleCards.length) {
+        gsap.to(visibleCards, {
           opacity: 1,
           y: 0,
           scale: 1,
           rotateX: 0,
-          duration: 0.75,
-          ease: 'power2.out',
+          rotateY: 0,
+          duration: 0.7,
+          ease: 'power3.out',
           stagger: {
-            each: 0.08,
+            each: 0.035,
+            grid: 'auto',
             from: 'start',
           },
           overwrite: 'auto',
         });
-      },
-      onLeaveBack: (batch) => {
-        gsap.to(batch, {
-          opacity: 0,
-          y: 30,
-          scale: 0.95,
-          rotateX: 5,
-          duration: 0.4,
-          ease: 'power2.in',
-          stagger: 0.02,
-          overwrite: 'auto',
-        });
-      },
-    });
+      }
 
-    // ===== SMOOTH HOVER 3D TILT (not conflicting with flip) =====
-    const handlers = [];
-
-    cards.forEach((card) => {
-      let isHovered = false;
-      let rafId = null;
-      let targetRX = 0, targetRY = 0;
-
-      const handleMove = (e) => {
-        isHovered = true;
-        const rect = card.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width - 0.5;
-        const y = (e.clientY - rect.top) / rect.height - 0.5;
-        targetRY = x * 8;
-        targetRX = -y * 6;
-
-        if (!rafId) {
-          rafId = requestAnimationFrame(() => {
-            gsap.to(card, {
-              rotateY: targetRY,
-              rotateX: targetRX,
-              scale: 1.03,
-              boxShadow: `${-targetRY * 1.5}px ${targetRX * 1.5}px 25px rgba(0,0,0,0.1)`,
+      // Off-screen cards — scroll-triggered batch
+      if (offscreenCards.length) {
+        ScrollTrigger.batch(offscreenCards, {
+          id: 'curr-batch',
+          start: 'top 92%',
+          batchMax: 10,
+          onEnter: (batch) => {
+            gsap.to(batch, {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              rotateX: 0,
+              rotateY: 0,
               duration: 0.6,
-              ease: 'power3.out',
-              transformPerspective: 1000,
+              ease: 'power2.out',
+              stagger: {
+                each: 0.04,
+                from: 'start',
+              },
               overwrite: 'auto',
             });
-            rafId = null;
-          });
-        }
-      };
-
-      const handleLeave = () => {
-        isHovered = false;
-        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-        gsap.to(card, {
-          rotateY: 0,
-          rotateX: 0,
-          scale: 1,
-          boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
-          duration: 0.7,
-          ease: 'power3.out',
-          overwrite: 'auto',
+          },
+          onLeaveBack: (batch) => {
+            gsap.to(batch, {
+              opacity: 0,
+              y: 30,
+              scale: 0.93,
+              rotateX: 5,
+              duration: 0.3,
+              ease: 'power2.in',
+              stagger: 0.015,
+              overwrite: 'auto',
+            });
+          },
         });
-      };
+      }
+    }
 
-      card.addEventListener('mousemove', handleMove);
-      card.addEventListener('mouseleave', handleLeave);
-      handlers.push({ card, handleMove, handleLeave });
-    });
+    // ===== SMOOTH HOVER 3D TILT (desktop only, skip touch) =====
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const handlers = [];
+
+    if (!isTouchDevice) {
+      cards.forEach((card) => {
+        let rafId = null;
+        let targetRX = 0, targetRY = 0;
+
+        const handleMove = (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          targetRY = x * 8;
+          targetRX = -y * 6;
+
+          if (!rafId) {
+            rafId = requestAnimationFrame(() => {
+              gsap.to(card, {
+                rotateY: targetRY,
+                rotateX: targetRX,
+                scale: 1.04,
+                boxShadow: `${-targetRY * 1.5}px ${targetRX * 1.5}px 30px rgba(0,0,0,0.12)`,
+                duration: 0.5,
+                ease: 'power3.out',
+                transformPerspective: 1000,
+                overwrite: 'auto',
+              });
+              rafId = null;
+            });
+          }
+        };
+
+        const handleLeave = () => {
+          if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+          gsap.to(card, {
+            rotateY: 0,
+            rotateX: 0,
+            scale: 1,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+            duration: 0.6,
+            ease: 'power3.out',
+            overwrite: 'auto',
+          });
+        };
+
+        card.addEventListener('mousemove', handleMove);
+        card.addEventListener('mouseleave', handleLeave);
+        handlers.push({ card, handleMove, handleLeave });
+      });
+    }
 
     return () => {
       handlers.forEach(({ card, handleMove, handleLeave }) => {
@@ -261,50 +348,69 @@ export default function Currencies() {
       .filter(Boolean);
   }, [convertAmount, convertFrom]);
 
-  // ===== DETAIL PANEL — SMOOTH OPEN =====
+  // ===== DETAIL PANEL — CINEMATIC OPEN =====
   const handleSelect = useCallback((currency) => {
     setSelectedCurrency(currency);
 
-    // Stagger in from right with depth
     requestAnimationFrame(() => {
       const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
+      // Overlay fade
+      tl.fromTo('.detail-panel-overlay',
+        { opacity: 0 },
+        { opacity: 1, duration: 0.35 }
+      );
+
+      // Panel slide with bounce
       tl.fromTo('.currency-detail-panel',
         { xPercent: 100, opacity: 0 },
-        { xPercent: 0, opacity: 1, duration: 0.55 }
-      )
-      .fromTo('.detail-header',
-        { opacity: 0, y: -20 },
-        { opacity: 1, y: 0, duration: 0.4 },
+        { xPercent: 0, opacity: 1, duration: 0.6, ease: 'power3.out' },
+        '-=0.2'
+      );
+
+      // Header with parallax depth
+      tl.fromTo('.detail-header',
+        { opacity: 0, y: -30, scale: 1.02 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.5 },
+        '-=0.3'
+      );
+
+      // Flag bounces in
+      tl.fromTo('.detail-flag',
+        { opacity: 0, scale: 0, rotation: -20 },
+        { opacity: 1, scale: 1, rotation: 0, duration: 0.6, ease: 'elastic.out(1, 0.5)' },
+        '-=0.2'
+      );
+
+      // Name + badge stagger
+      tl.fromTo('.detail-name, .detail-code-badge',
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.4, stagger: 0.08 },
         '-=0.25'
-      )
-      .fromTo('.detail-flag',
-        { opacity: 0, scale: 0.5, rotation: -15 },
-        { opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: 'back.out(1.8)' },
-        '-=0.2'
-      )
-      .fromTo('.detail-name, .detail-code-badge',
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.35, stagger: 0.08 },
-        '-=0.2'
-      )
-      .fromTo('.detail-info-item',
-        { opacity: 0, y: 18, scale: 0.92 },
+      );
+
+      // Info items cascade
+      tl.fromTo('.detail-info-item',
+        { opacity: 0, y: 24, scale: 0.88 },
         {
           opacity: 1, y: 0, scale: 1,
-          duration: 0.4, stagger: 0.06,
-          ease: 'power3.out',
+          duration: 0.45, stagger: 0.05,
+          ease: 'back.out(1.3)',
         },
         '-=0.15'
-      )
-      .fromTo('.detail-section-title',
-        { opacity: 0, x: -15 },
-        { opacity: 1, x: 0, duration: 0.35, stagger: 0.1 },
+      );
+
+      // Section titles slide
+      tl.fromTo('.detail-section-title',
+        { opacity: 0, x: -20 },
+        { opacity: 1, x: 0, duration: 0.35, stagger: 0.08 },
         '-=0.2'
-      )
-      .fromTo('.detail-rate-bar .detail-rate-fill',
+      );
+
+      // Rate bar fill
+      tl.fromTo('.detail-rate-bar .detail-rate-fill',
         { width: '0%' },
-        { width: 'auto', duration: 0.6, ease: 'power2.out' },
+        { width: 'auto', duration: 0.7, ease: 'power2.out' },
         '-=0.2'
       );
     });
@@ -317,29 +423,60 @@ export default function Currencies() {
       onComplete: () => setSelectedCurrency(null),
     });
 
+    // Items shrink away
     tl.to('.detail-info-item', {
-      opacity: 0, y: 10, scale: 0.95,
+      opacity: 0, y: 12, scale: 0.92,
       duration: 0.2, stagger: 0.02, overwrite: true,
-    })
-    .to('.currency-detail-panel', {
+    });
+
+    // Flag spins out
+    tl.to('.detail-flag', {
+      opacity: 0, scale: 0.5, rotation: 15,
+      duration: 0.25,
+    }, '-=0.15');
+
+    // Panel slides out
+    tl.to('.currency-detail-panel', {
       xPercent: 100, opacity: 0,
-      duration: 0.4,
-    }, '-=0.1')
-    .to('.detail-panel-overlay', {
+      duration: 0.4, ease: 'power4.in',
+    }, '-=0.1');
+
+    // Overlay fades
+    tl.to('.detail-panel-overlay', {
       opacity: 0,
       duration: 0.3,
-    }, '-=0.35');
+    }, '-=0.3');
   }, []);
 
   return (
-    <div className="currency-page">
+    <div className="currency-page" ref={pageRef}>
       {/* Hero */}
       <section className="currency-hero">
+        {/* Floating particles */}
+        <div className="hero-particles">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="hero-particle" />
+          ))}
+        </div>
         <div className="container">
           <h1 className="section-title">World Currencies</h1>
           <p className="section-subtitle">
-            Explore every currency on the planet — live rates, symbols, and regions in a stunning 3D interactive grid.
+            Explore {currencies.length} currencies across the globe — live rates, symbols, and regions in a stunning interactive grid.
           </p>
+          <div className="hero-stats-bar">
+            <div className="hero-stat">
+              <div className="hero-stat-value">{currencies.length}</div>
+              <div className="hero-stat-label">Currencies</div>
+            </div>
+            <div className="hero-stat">
+              <div className="hero-stat-value">{regions.length - 1}</div>
+              <div className="hero-stat-label">Regions</div>
+            </div>
+            <div className="hero-stat">
+              <div className="hero-stat-value">Live</div>
+              <div className="hero-stat-label">Rates</div>
+            </div>
+          </div>
         </div>
       </section>
 
