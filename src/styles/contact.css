@@ -1,0 +1,13 @@
+/* ===== CONTACT PAGE RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  .contact-form-wrapper {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-form-wrapper form > div:first-child {
+    grid-template-columns: 1fr !important;
+  }
+}

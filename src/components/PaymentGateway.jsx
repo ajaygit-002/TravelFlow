@@ -59,6 +59,7 @@ export default function PaymentGateway({
   const [upiId, setUpiId] = useState('');
   const [selectedUpi, setSelectedUpi] = useState(null);
   const [selectedBank, setSelectedBank] = useState(null);
+  const [selectedWallet, setSelectedWallet] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingStep, setProcessingStep] = useState(0);
   const cardPreviewRef = useRef(null);
@@ -82,6 +83,10 @@ export default function PaymentGateway({
       opacity: 0, y: 15, duration: 0.2,
       onComplete: () => {
         setPaymentMethod(method);
+        // Reset selections when switching
+        setSelectedUpi(null);
+        setSelectedBank(null);
+        setSelectedWallet(null);
         gsap.fromTo('.pg-method-body',
           { opacity: 0, y: 15 },
           { opacity: 1, y: 0, duration: 0.35, ease: 'power3.out' }
@@ -356,8 +361,8 @@ export default function PaymentGateway({
                   ].map((w) => (
                     <button
                       key={w.id}
-                      className={`pg-wallet-btn ${selectedBank === w.id ? 'active' : ''}`}
-                      onClick={() => setSelectedBank(w.id)}
+                      className={`pg-wallet-btn ${selectedWallet === w.id ? 'active' : ''}`}
+                      onClick={() => setSelectedWallet(w.id)}
                     >
                       <span className="pg-wallet-icon">{w.icon}</span>
                       <div className="pg-wallet-info">
@@ -370,7 +375,7 @@ export default function PaymentGateway({
                 <button
                   className="btn btn-primary btn-lg pg-pay-btn"
                   onClick={handlePayment}
-                  disabled={!selectedBank}
+                  disabled={!selectedWallet}
                   style={{ marginTop: 24 }}
                 >
                   Pay ${amount.toFixed(2)} via Wallet →

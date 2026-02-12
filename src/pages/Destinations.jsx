@@ -416,7 +416,7 @@ export default function Destinations() {
             </div>
             <div className="dest-hero-stat">
               <span className="dest-hero-stat-value">{tourSports.length}</span>
-              <span className="dest-hero-stat-label">Tour Sports</span>
+              <span className="dest-hero-stat-label">Activities</span>
             </div>
           </div>
         </div>

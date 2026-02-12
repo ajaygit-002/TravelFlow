@@ -27,16 +27,7 @@ export default function Navbar() {
     setMobileOpen(false);
   }, [location]);
 
-  const handleNavClick = (path) => {
-    if (path.includes('#')) {
-      const id = path.split('#')[1];
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-        setMobileOpen(false);
-        return;
-      }
-    }
+  const handleNavClick = () => {
     setMobileOpen(false);
   };
 
@@ -54,7 +45,7 @@ export default function Navbar() {
               key={link.name}
               to={link.path}
               className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}
-              onClick={() => handleNavClick(link.path)}
+              onClick={handleNavClick}
             >
               {link.name}
             </Link>
@@ -85,12 +76,12 @@ export default function Navbar() {
             key={link.name}
             to={link.path}
             className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}
-            onClick={() => handleNavClick(link.path)}
+            onClick={handleNavClick}
           >
             {link.name}
           </Link>
         ))}
-        <Link to="/get-started" className="btn btn-primary btn-sm" onClick={() => setMobileOpen(false)}>
+        <Link to="/get-started" className="btn btn-primary btn-sm" onClick={handleNavClick}>
           Get Started
         </Link>
       </div>

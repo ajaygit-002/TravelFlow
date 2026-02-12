@@ -70,7 +70,6 @@ const currencies = [
   { code: 'UAH', name: 'Ukrainian Hryvnia', symbol: '₴', country: 'Ukraine', flag: '🇺🇦', rate: 37.50, region: 'Europe' },
   { code: 'RON', name: 'Romanian Leu', symbol: 'lei', country: 'Romania', flag: '🇷🇴', rate: 4.58, region: 'Europe' },
   { code: 'BGN', name: 'Bulgarian Lev', symbol: 'лв', country: 'Bulgaria', flag: '🇧🇬', rate: 1.80, region: 'Europe' },
-  { code: 'HRK', name: 'Croatian Kuna', symbol: 'kn', country: 'Croatia', flag: '🇭🇷', rate: 6.95, region: 'Europe' },
   { code: 'RSD', name: 'Serbian Dinar', symbol: 'din.', country: 'Serbia', flag: '🇷🇸', rate: 108, region: 'Europe' },
   { code: 'ISK', name: 'Icelandic Króna', symbol: 'kr', country: 'Iceland', flag: '🇮🇸', rate: 137, region: 'Europe' },
   { code: 'ALL', name: 'Albanian Lek', symbol: 'L', country: 'Albania', flag: '🇦🇱', rate: 95, region: 'Europe' },

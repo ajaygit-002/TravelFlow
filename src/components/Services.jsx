@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import '../styles/services.css';
@@ -154,32 +155,40 @@ export default function Services() {
         }
 
         // Hover 3D tilt
-        let raf = null;
-        card.addEventListener('mousemove', (e) => {
-          if (raf) return;
-          raf = requestAnimationFrame(() => {
-            const rect = card.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / rect.width - 0.5;
-            const y = (e.clientY - rect.top) / rect.height - 0.5;
-            gsap.to(card, {
-              rotateY: x * 10,
-              rotateX: -y * 8,
-              scale: 1.02,
-              duration: 0.5,
-              ease: 'power3.out',
-              transformPerspective: 1200,
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (!isTouchDevice) {
+          let raf = null;
+          const handleMove = (e) => {
+            if (raf) return;
+            raf = requestAnimationFrame(() => {
+              const rect = card.getBoundingClientRect();
+              const x = (e.clientX - rect.left) / rect.width - 0.5;
+              const y = (e.clientY - rect.top) / rect.height - 0.5;
+              gsap.to(card, {
+                rotateY: x * 10,
+                rotateX: -y * 8,
+                scale: 1.02,
+                duration: 0.5,
+                ease: 'power3.out',
+                transformPerspective: 1200,
+              });
+              raf = null;
             });
-            raf = null;
-          });
-        });
+          };
 
-        card.addEventListener('mouseleave', () => {
-          if (raf) { cancelAnimationFrame(raf); raf = null; }
-          gsap.to(card, {
-            rotateY: 0, rotateX: 0, scale: 1,
-            duration: 0.6, ease: 'power3.out',
-          });
-        });
+          const handleLeave = () => {
+            if (raf) { cancelAnimationFrame(raf); raf = null; }
+            gsap.to(card, {
+              rotateY: 0, rotateX: 0, scale: 1,
+              duration: 0.6, ease: 'power3.out',
+            });
+          };
+
+          card.addEventListener('mousemove', handleMove);
+          card.addEventListener('mouseleave', handleLeave);
+          card._handleMove = handleMove;
+          card._handleLeave = handleLeave;
+        }
       });
 
       // ===== PROCESS STEPS — SEQUENTIAL REVEAL WITH CONNECTING LINE =====
@@ -281,7 +290,14 @@ export default function Services() {
 
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      // Clean up event listeners before GSAP context reverts
+      document.querySelectorAll('.svc-core-card').forEach((card) => {
+        if (card._handleMove) card.removeEventListener('mousemove', card._handleMove);
+        if (card._handleLeave) card.removeEventListener('mouseleave', card._handleLeave);
+      });
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -423,12 +439,12 @@ export default function Services() {
             Join 2 million+ travelers who trust TravelFlow for unforgettable experiences.
           </p>
           <div className="svc-cta-buttons">
-            <a href="/destinations" className="btn btn-primary btn-lg">
+            <Link to="/destinations" className="btn btn-primary btn-lg">
               Explore Destinations →
-            </a>
-            <a href="/contact" className="btn btn-outline btn-lg">
+            </Link>
+            <Link to="/contact" className="btn btn-outline btn-lg">
               Contact Us
-            </a>
+            </Link>
           </div>
         </div>
       </section>

@@ -621,6 +621,7 @@ export default function FlightBooking() {
                               type="date"
                               value={bookingForm.date}
                               onChange={(e) => setBookingForm({ ...bookingForm, date: e.target.value })}
+                              min={new Date().toISOString().split('T')[0]}
                               required
                             />
                           </div>

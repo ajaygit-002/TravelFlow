@@ -448,10 +448,10 @@ export function animateContactForm() {
 
 /* ===== ABOUT SECTION ===== */
 export function animateAbout() {
-  const aboutContent = document.querySelector('.about-content');
-  if (!aboutContent) return;
+  const aboutStory = document.querySelector('.about-story');
+  if (!aboutStory) return;
 
-  gsap.fromTo('.about-image',
+  gsap.fromTo('.about-story-img-wrap',
     { opacity: 0, x: -60 },
     {
       opacity: 1,
@@ -459,22 +459,23 @@ export function animateAbout() {
       duration: 0.8,
       ease: 'power3.out',
       scrollTrigger: {
-        trigger: aboutContent,
+        trigger: aboutStory,
         start: 'top 80%',
         toggleActions: 'play none none reverse',
       },
     }
   );
 
-  gsap.fromTo('.about-text',
+  gsap.fromTo('.about-story-text > *',
     { opacity: 0, x: 60 },
     {
       opacity: 1,
       x: 0,
       duration: 0.8,
+      stagger: 0.1,
       ease: 'power3.out',
       scrollTrigger: {
-        trigger: aboutContent,
+        trigger: aboutStory,
         start: 'top 80%',
         toggleActions: 'play none none reverse',
       },

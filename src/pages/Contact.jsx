@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Footer from '../components/Footer';
 import { animateSections, animateTitles, animateContactForm, animateNavbar } from '../animations/gsapAnimations';
+import '../styles/contact.css';
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
@@ -149,7 +150,7 @@ const formWrapperStyle = {
 
 const contactInfoStyle = {
   background: 'linear-gradient(135deg, #2F80ED, #1F2937)',
-  padding: '40px 30px',
+  padding: 'clamp(24px, 4vw, 40px) clamp(20px, 3vw, 30px)',
   display: 'flex',
   flexDirection: 'column',
 };
@@ -174,7 +175,7 @@ const contactIconStyle = {
 };
 
 const formStyle = {
-  padding: '40px 30px',
+  padding: 'clamp(24px, 4vw, 40px) clamp(20px, 3vw, 30px)',
   background: '#fff',
   display: 'flex',
   flexDirection: 'column',

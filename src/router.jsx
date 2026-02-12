@@ -14,6 +14,7 @@ import TermsOfService from './pages/TermsOfService';
 import GetStarted from './pages/GetStarted';
 import FlightBooking from './pages/FlightBooking';
 import TicketView from './pages/TicketView';
+import NotFound from './pages/NotFound';
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
       { path: 'get-started', element: <GetStarted /> },
       { path: 'flights', element: <FlightBooking /> },
       { path: 'ticket', element: <TicketView /> },
+      { path: '*', element: <NotFound /> },
     ],
   },
 ]);

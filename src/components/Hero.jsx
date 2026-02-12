@@ -59,7 +59,7 @@ export default function Hero() {
           </div>
 
           <h1 className="hero-title">
-            Welcome to <span>Our Website</span>
+            Welcome to <span>TravelFlow</span>
           </h1>
 
           <p className="hero-subtitle">

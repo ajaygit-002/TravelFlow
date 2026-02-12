@@ -700,7 +700,7 @@ export default function Currencies() {
               </div>
 
               <div className="detail-section-title">Quick Convert</div>
-              <div
+              <div className="detail-quick-grid"
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr',
