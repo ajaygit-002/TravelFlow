@@ -34,6 +34,12 @@ const destinations = [
       'https://images.unsplash.com/photo-1509439581779-6298f75bf6e5?w=600&q=80',
       'https://images.unsplash.com/photo-1550340499-a6c60fc8287c?w=600&q=80',
     ],
+    reviews: [
+      { name: 'Sarah M.', avatar: '👩‍💼', rating: 5, date: 'Nov 2024', text: 'Absolutely magical! The Eiffel Tower sunset view was unforgettable. Our guide knew all the hidden gems.' },
+      { name: 'James L.', avatar: '👨‍💻', rating: 5, date: 'Oct 2024', text: 'Best trip of my life. The cooking class in Le Marais was a highlight. Everything was perfectly organized.' },
+      { name: 'Emily R.', avatar: '👩‍🎨', rating: 4, date: 'Sep 2024', text: 'Wonderful experience overall. The Seine cruise was romantic. Only wish we had more free time to explore.' },
+      { name: 'Michael P.', avatar: '🧑‍💼', rating: 5, date: 'Aug 2024', text: 'From the Louvre to Montmartre, every day was packed with amazing experiences. Highly recommend!' },
+    ],
   },
   {
     id: 'tokyo',
@@ -72,6 +78,12 @@ const destinations = [
       'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=600&q=80',
       'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&q=80',
     ],
+    reviews: [
+      { name: 'David K.', avatar: '👨‍🔬', rating: 5, date: 'Dec 2024', text: 'Tokyo blew my mind! The blend of ancient temples and futuristic tech is surreal. Tsukiji was incredible.' },
+      { name: 'Anna W.', avatar: '👩‍🏫', rating: 5, date: 'Nov 2024', text: 'Mt. Fuji day trip was the highlight. The JR Rail Pass made everything so convenient. Loved every minute!' },
+      { name: 'Tom B.', avatar: '🧑‍🍳', rating: 4, date: 'Oct 2024', text: 'Great cultural experience. Akihabara was amazing for anime fans. Food everywhere was exceptional quality.' },
+      { name: 'Lisa C.', avatar: '👩‍⚕️', rating: 5, date: 'Sep 2024', text: 'The onsen experience was heavenly. Our guide spoke perfect English. Seven days felt like a dream.' },
+    ],
   },
   {
     id: 'bali',
@@ -109,6 +121,12 @@ const destinations = [
       'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=600&q=80',
       'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?w=600&q=80',
     ],
+    reviews: [
+      { name: 'Rachel S.', avatar: '🧘‍♀️', rating: 5, date: 'Jan 2025', text: 'Bali is pure magic. The rice terraces at sunrise took my breath away. The villa was absolutely stunning.' },
+      { name: 'Chris D.', avatar: '🏄‍♂️', rating: 5, date: 'Dec 2024', text: 'Snorkeling with manta rays was a once-in-a-lifetime experience! The Kecak fire dance was mesmerizing.' },
+      { name: 'Sophie H.', avatar: '👩‍🎤', rating: 4, date: 'Nov 2024', text: 'Beautiful island. The spa treatments were world-class. Nusa Penida was worth the boat ride.' },
+      { name: 'Mark T.', avatar: '📸', rating: 5, date: 'Oct 2024', text: 'Every photo looked like a postcard. Uluwatu sunset was the most beautiful thing I have ever seen.' },
+    ],
   },
   {
     id: 'new-york',
@@ -143,6 +161,12 @@ const destinations = [
       'https://images.unsplash.com/photo-1522083165195-3424ed129620?w=600&q=80',
       'https://images.unsplash.com/photo-1485871981521-5b1fd3805eee?w=600&q=80',
       'https://images.unsplash.com/photo-1518235506717-e1ed3306a89b?w=600&q=80',
+    ],
+    reviews: [
+      { name: 'Alex R.', avatar: '🗽', rating: 5, date: 'Feb 2025', text: 'NYC energy is unmatched! The Broadway show was incredible. Central Park bike tour was a great way to see the city.' },
+      { name: 'Kate W.', avatar: '🎭', rating: 4, date: 'Jan 2025', text: 'Loved every minute. The 9/11 Memorial was deeply moving. Brooklyn Bridge at sunset was gorgeous.' },
+      { name: 'John P.', avatar: '🏙️', rating: 5, date: 'Dec 2024', text: 'Empire State Building at night is a must! The hotel in Times Square was perfectly located for everything.' },
+      { name: 'Nina G.', avatar: '🎨', rating: 5, date: 'Nov 2024', text: 'The Met could easily take a whole day. Chelsea Market food was amazing. Already planning my return trip!' },
     ],
   },
 ];

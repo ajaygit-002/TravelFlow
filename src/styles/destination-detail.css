@@ -86,6 +86,40 @@
   transform: translateX(-4px);
 }
 
+.dd-hero-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dd-wishlist-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.dd-wishlist-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1);
+}
+
+.dd-wishlist-btn.dd-wishlisted {
+  color: #ff4757;
+  background: rgba(255, 71, 87, 0.2);
+  border-color: rgba(255, 71, 87, 0.4);
+}
+
 .dd-hero-tagline {
   display: inline-block;
   font-size: 0.85rem;
@@ -703,5 +737,330 @@
 
   .dd-cta-section {
     margin-bottom: 48px;
+  }
+}
+
+/* ================================================================
+   REVIEWS SECTION
+   ================================================================ */
+
+.dd-reviews-section {
+  margin-bottom: 64px;
+}
+
+/* ── Summary ── */
+.rv-summary {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  background: var(--surface, #f8f9fb);
+  border: 1px solid var(--card-border, #f0f0f0);
+  border-radius: 16px;
+  padding: 28px 32px;
+  margin-bottom: 28px;
+}
+
+.rv-summary-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 120px;
+}
+
+.rv-big-score {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text-primary, #1f2937);
+  font-family: 'Poppins', sans-serif;
+}
+
+.rv-total {
+  font-size: 0.82rem;
+  color: var(--gray);
+}
+
+/* Stars */
+.rv-stars {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.rv-star-filled {
+  color: #f59e0b;
+}
+
+.rv-star-empty {
+  color: #d1d5db;
+}
+
+/* Distribution */
+.rv-distribution {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rv-dist-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rv-dist-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gray);
+  min-width: 28px;
+}
+
+.rv-dist-bar {
+  flex: 1;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.rv-dist-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  border-radius: 4px;
+  transition: width 0.8s ease;
+}
+
+.rv-dist-count {
+  font-size: 0.78rem;
+  color: var(--gray);
+  min-width: 16px;
+  text-align: right;
+}
+
+/* ── Review Cards ── */
+.rv-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rv-card {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--card-border, #f0f0f0);
+  border-radius: 14px;
+  padding: 22px 24px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.rv-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.rv-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.rv-avatar {
+  font-size: 2rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border-radius: 50%;
+}
+
+.rv-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.rv-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary, #1f2937);
+}
+
+.rv-date {
+  font-size: 0.78rem;
+  color: var(--gray);
+}
+
+.rv-text {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Toggle */
+.rv-toggle {
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 28px;
+  background: var(--primary-blue);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.rv-toggle:hover {
+  background: #1a6dd4;
+  transform: translateY(-1px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .rv-summary {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+  .rv-summary-left {
+    flex-direction: row;
+    min-width: unset;
+    gap: 12px;
+  }
+  .rv-big-score {
+    font-size: 2.2rem;
+  }
+  .rv-card {
+    padding: 16px;
+  }
+}
+
+/* ── Dark mode ── */
+[data-theme="dark"] .rv-avatar {
+  background: #2a2a4a;
+}
+
+[data-theme="dark"] .rv-dist-bar {
+  background: #2a2a4a;
+}
+
+/* ================================================================
+   GALLERY LIGHTBOX (overlay handled in DestinationDetails.jsx)
+   ================================================================ */
+
+.dd-lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: lightboxFadeIn 0.3s ease;
+  cursor: pointer;
+}
+
+@keyframes lightboxFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dd-lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 85vh;
+  cursor: default;
+}
+
+.dd-lightbox-img {
+  max-width: 90vw;
+  max-height: 80vh;
+  border-radius: 12px;
+  object-fit: contain;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: lightboxZoomIn 0.35s ease;
+}
+
+@keyframes lightboxZoomIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.dd-lightbox-close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff;
+  color: #1f2937;
+  font-size: 1.1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+  z-index: 2001;
+}
+
+.dd-lightbox-close:hover {
+  transform: scale(1.15);
+}
+
+.dd-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dd-lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.dd-lightbox-prev {
+  left: -60px;
+}
+
+.dd-lightbox-next {
+  right: -60px;
+}
+
+.dd-lightbox-counter {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  margin-top: 12px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .dd-lightbox-prev {
+    left: 10px;
+  }
+  .dd-lightbox-next {
+    right: 10px;
+  }
+  .dd-lightbox-close {
+    top: -40px;
+    right: 0;
   }
 }

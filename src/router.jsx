@@ -1,41 +1,51 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import App from './App';
-import Home from './pages/Home';
-import About from './pages/About';
-import Destinations from './pages/Destinations';
-import Contact from './pages/Contact';
-import Currencies from './pages/Currencies';
-import DestinationDetails from './pages/DestinationDetails';
-import Booking from './pages/Booking';
-import HelpCenter from './pages/HelpCenter';
-import FAQs from './pages/FAQs';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import TermsOfService from './pages/TermsOfService';
-import GetStarted from './pages/GetStarted';
-import FlightBooking from './pages/FlightBooking';
-import TicketView from './pages/TicketView';
-import NotFound from './pages/NotFound';
+import LoadingSpinner from './components/LoadingSpinner';
+
+/* Lazy-loaded pages */
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const Destinations = lazy(() => import('./pages/Destinations'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Currencies = lazy(() => import('./pages/Currencies'));
+const DestinationDetails = lazy(() => import('./pages/DestinationDetails'));
+const Booking = lazy(() => import('./pages/Booking'));
+const HelpCenter = lazy(() => import('./pages/HelpCenter'));
+const FAQs = lazy(() => import('./pages/FAQs'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService'));
+const GetStarted = lazy(() => import('./pages/GetStarted'));
+const FlightBooking = lazy(() => import('./pages/FlightBooking'));
+const TicketView = lazy(() => import('./pages/TicketView'));
+const Wishlist = lazy(() => import('./pages/Wishlist'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+
+function SuspenseWrap({ children }) {
+  return <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>;
+}
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
     children: [
-      { index: true, element: <Home /> },
-      { path: 'about', element: <About /> },
-      { path: 'destinations', element: <Destinations /> },
-      { path: 'destination/:id', element: <DestinationDetails /> },
-      { path: 'booking/:id', element: <Booking /> },
-      { path: 'currencies', element: <Currencies /> },
-      { path: 'contact', element: <Contact /> },
-      { path: 'help', element: <HelpCenter /> },
-      { path: 'faqs', element: <FAQs /> },
-      { path: 'privacy', element: <PrivacyPolicy /> },
-      { path: 'terms', element: <TermsOfService /> },
-      { path: 'get-started', element: <GetStarted /> },
-      { path: 'flights', element: <FlightBooking /> },
-      { path: 'ticket', element: <TicketView /> },
-      { path: '*', element: <NotFound /> },
+      { index: true, element: <SuspenseWrap><Home /></SuspenseWrap> },
+      { path: 'about', element: <SuspenseWrap><About /></SuspenseWrap> },
+      { path: 'destinations', element: <SuspenseWrap><Destinations /></SuspenseWrap> },
+      { path: 'destination/:id', element: <SuspenseWrap><DestinationDetails /></SuspenseWrap> },
+      { path: 'booking/:id', element: <SuspenseWrap><Booking /></SuspenseWrap> },
+      { path: 'currencies', element: <SuspenseWrap><Currencies /></SuspenseWrap> },
+      { path: 'contact', element: <SuspenseWrap><Contact /></SuspenseWrap> },
+      { path: 'help', element: <SuspenseWrap><HelpCenter /></SuspenseWrap> },
+      { path: 'faqs', element: <SuspenseWrap><FAQs /></SuspenseWrap> },
+      { path: 'privacy', element: <SuspenseWrap><PrivacyPolicy /></SuspenseWrap> },
+      { path: 'terms', element: <SuspenseWrap><TermsOfService /></SuspenseWrap> },
+      { path: 'get-started', element: <SuspenseWrap><GetStarted /></SuspenseWrap> },
+      { path: 'flights', element: <SuspenseWrap><FlightBooking /></SuspenseWrap> },
+      { path: 'ticket', element: <SuspenseWrap><TicketView /></SuspenseWrap> },
+      { path: 'wishlist', element: <SuspenseWrap><Wishlist /></SuspenseWrap> },
+      { path: '*', element: <SuspenseWrap><NotFound /></SuspenseWrap> },
     ],
   },
 ]);

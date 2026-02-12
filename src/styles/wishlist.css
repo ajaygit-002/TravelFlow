@@ -1,0 +1,355 @@
+/* ================================================================
+   WISHLIST PAGE
+   ================================================================ */
+
+/* ── Hero ── */
+.wl-hero {
+  background: linear-gradient(135deg, #1f2937, #111827);
+  padding: 140px 0 60px;
+  text-align: center;
+  color: #fff;
+}
+
+.wl-hero-badge {
+  display: inline-block;
+  padding: 6px 18px;
+  background: rgba(255, 71, 87, 0.15);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  border-radius: 50px;
+  color: #ff4757;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.wl-hero-title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.wl-hero-subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Container ── */
+.wl-container {
+  padding-top: 40px;
+  padding-bottom: 80px;
+  min-height: 50vh;
+}
+
+/* ── Empty ── */
+.wl-empty {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.wl-empty-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.wl-empty h2 {
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+}
+
+.wl-empty p {
+  color: var(--gray);
+  margin-bottom: 32px;
+  font-size: 1.05rem;
+}
+
+.wl-empty-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Toolbar ── */
+.wl-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--card-border, #f0f0f0);
+}
+
+.wl-count {
+  font-size: 0.95rem;
+  color: var(--gray);
+  font-weight: 500;
+}
+
+.wl-clear-btn {
+  padding: 8px 20px;
+  background: #fff1f2;
+  color: #e74c3c;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.wl-clear-btn:hover {
+  background: #e74c3c;
+  color: #fff;
+}
+
+/* ── Section ── */
+.wl-section {
+  margin-bottom: 48px;
+}
+
+.wl-section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--primary-blue);
+  display: inline-block;
+}
+
+/* ── Card Grid ── */
+.wl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.wl-flights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* ── Destination Card ── */
+.wl-card {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--card-border, #f0f0f0);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wl-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
+}
+
+.wl-card-img-wrap {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.wl-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.wl-card:hover .wl-card-img {
+  transform: scale(1.05);
+}
+
+.wl-remove-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.wl-remove-btn:hover {
+  background: #e74c3c;
+  transform: scale(1.1);
+}
+
+.wl-remove-btn-flight {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.wl-card-body {
+  padding: 20px;
+}
+
+.wl-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.wl-card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.wl-card-price {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+}
+
+.wl-card-desc {
+  font-size: 0.88rem;
+  color: var(--gray);
+  line-height: 1.5;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.wl-card-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.wl-tag {
+  padding: 4px 10px;
+  background: var(--surface, #f8f9fb);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--gray);
+}
+
+.wl-view-btn {
+  width: 100%;
+  padding: 10px;
+  background: var(--primary-blue);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.wl-view-btn:hover {
+  background: #1a6dd4;
+  transform: translateY(-1px);
+}
+
+/* ── Flight Card ── */
+.wl-flight-card {
+  position: relative;
+  padding: 24px;
+}
+
+.wl-flight-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.wl-flight-airline {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.wl-flight-class {
+  padding: 4px 10px;
+  background: var(--surface, #f8f9fb);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--primary-blue);
+}
+
+.wl-flight-route {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.wl-flight-city {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.wl-flight-arrow {
+  color: var(--primary-blue);
+  font-size: 1.5rem;
+}
+
+.wl-flight-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.wl-flight-price {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--primary-blue);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .wl-hero {
+    padding: 120px 0 40px;
+  }
+  .wl-hero-title {
+    font-size: 2.2rem;
+  }
+  .wl-grid {
+    grid-template-columns: 1fr;
+  }
+  .wl-flights-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .wl-hero-title {
+    font-size: 1.8rem;
+  }
+  .wl-card-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
+/* ── Dark mode ── */
+[data-theme="dark"] .wl-hero {
+  background: linear-gradient(135deg, #0f0f1a, #1a1a2e);
+}
+
+[data-theme="dark"] .wl-clear-btn {
+  background: rgba(231, 76, 60, 0.15);
+}
+
+[data-theme="dark"] .wl-clear-btn:hover {
+  background: #e74c3c;
+  color: #fff;
+}

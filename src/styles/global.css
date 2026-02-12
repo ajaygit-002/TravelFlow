@@ -24,6 +24,54 @@
   --glass-bg: rgba(255, 255, 255, 0.15);
   --glass-border: rgba(255, 255, 255, 0.25);
   --transition: all 0.3s ease;
+  --card-bg: #FFFFFF;
+  --card-border: #f0f0f0;
+  --text-primary: #1F2937;
+  --text-secondary: #6B7280;
+  --input-bg: #FFFFFF;
+  --input-border: #ddd;
+  --surface: #f8f9fb;
+}
+
+/* Dark mode theme */
+[data-theme="dark"] {
+  --dark: #E5E7EB;
+  --gray: #9CA3AF;
+  --white: #1a1a2e;
+  --background: #0f0f1a;
+  --shadow: rgba(0, 0, 0, 0.4);
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --card-bg: #1a1a2e;
+  --card-border: #2a2a4a;
+  --text-primary: #E5E7EB;
+  --text-secondary: #9CA3AF;
+  --input-bg: #1a1a2e;
+  --input-border: #2a2a4a;
+  --surface: #16162b;
+}
+
+[data-theme="dark"] body {
+  background-color: var(--background);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+[data-theme="dark"] ::selection {
+  background: var(--primary-blue);
+  color: #fff;
 }
 
 html {

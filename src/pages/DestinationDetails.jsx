@@ -1,9 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import destinations from '../data/destinations';
 import Footer from '../components/Footer';
+import ReviewSection from '../components/ReviewSection';
+import { useWishlist } from '../context/WishlistContext';
 import '../styles/destination-detail.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -13,6 +15,8 @@ export default function DestinationDetails() {
   const navigate = useNavigate();
   const pageRef = useRef(null);
   const dest = destinations.find((d) => d.id === id);
+  const [lightboxIdx, setLightboxIdx] = useState(null);
+  const { toggleItem, isInWishlist } = useWishlist();
 
   useEffect(() => {
     if (!dest || !pageRef.current) return;
@@ -46,6 +50,7 @@ export default function DestinationDetails() {
         '.dd-itinerary-section',
         '.dd-gallery-section',
         '.dd-included-section',
+        '.dd-reviews-section',
         '.dd-cta-section',
       ];
 
@@ -115,9 +120,22 @@ export default function DestinationDetails() {
         <img className="dd-hero-img" src={dest.heroImage} alt={dest.name} />
         <div className="dd-hero-overlay" />
         <div className="dd-hero-content">
-          <button className="dd-back-btn" onClick={handleBack}>
-            ← Back
-          </button>
+          <div className="dd-hero-top-row">
+            <button className="dd-back-btn" onClick={handleBack}>
+              ← Back
+            </button>
+            <button
+              className={`dd-wishlist-btn ${isInWishlist(dest.id, 'destination') ? 'dd-wishlisted' : ''}`}
+              onClick={() => toggleItem({
+                id: dest.id, type: 'destination', name: dest.name, flag: dest.flag,
+                image: dest.thumb || dest.image, desc: dest.desc, price: dest.priceLabel,
+                duration: dest.duration, rating: dest.rating,
+              })}
+              title={isInWishlist(dest.id, 'destination') ? 'Remove from wishlist' : 'Add to wishlist'}
+            >
+              {isInWishlist(dest.id, 'destination') ? '♥' : '♡'}
+            </button>
+          </div>
           <span className="dd-hero-tagline">{dest.tagline}</span>
           <h1 className="dd-hero-title">{dest.flag} {dest.name}</h1>
           <p className="dd-hero-country">{dest.country}</p>
@@ -202,7 +220,14 @@ export default function DestinationDetails() {
           <h2 className="dd-section-title">Gallery</h2>
           <div className="dd-gallery-grid">
             {dest.gallery.map((img, i) => (
-              <img className="dd-gallery-img" src={img} alt={`${dest.name} ${i + 1}`} key={i} loading="lazy" />
+              <img
+                className="dd-gallery-img"
+                src={img}
+                alt={`${dest.name} ${i + 1}`}
+                key={i}
+                loading="lazy"
+                onClick={() => setLightboxIdx(i)}
+              />
             ))}
           </div>
         </section>
@@ -219,6 +244,9 @@ export default function DestinationDetails() {
             ))}
           </div>
         </section>
+
+        {/* Reviews */}
+        <ReviewSection reviews={dest.reviews} rating={dest.rating} />
 
         {/* CTA */}
         <section className="dd-cta-section">
@@ -240,6 +268,39 @@ export default function DestinationDetails() {
           </div>
         </section>
       </div>
+
+      {/* Lightbox */}
+      {lightboxIdx !== null && (
+        <div
+          className="dd-lightbox-overlay"
+          onClick={() => setLightboxIdx(null)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setLightboxIdx(null);
+            if (e.key === 'ArrowRight') setLightboxIdx((prev) => (prev + 1) % dest.gallery.length);
+            if (e.key === 'ArrowLeft') setLightboxIdx((prev) => (prev - 1 + dest.gallery.length) % dest.gallery.length);
+          }}
+          tabIndex={0}
+          ref={(el) => el?.focus()}
+        >
+          <div className="dd-lightbox-content" onClick={(e) => e.stopPropagation()}>
+            <button className="dd-lightbox-close" onClick={() => setLightboxIdx(null)}>✕</button>
+            <button
+              className="dd-lightbox-nav dd-lightbox-prev"
+              onClick={() => setLightboxIdx((prev) => (prev - 1 + dest.gallery.length) % dest.gallery.length)}
+            >
+              ‹
+            </button>
+            <img className="dd-lightbox-img" src={dest.gallery[lightboxIdx]} alt={`${dest.name} ${lightboxIdx + 1}`} />
+            <button
+              className="dd-lightbox-nav dd-lightbox-next"
+              onClick={() => setLightboxIdx((prev) => (prev + 1) % dest.gallery.length)}
+            >
+              ›
+            </button>
+            <div className="dd-lightbox-counter">{lightboxIdx + 1} / {dest.gallery.length}</div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

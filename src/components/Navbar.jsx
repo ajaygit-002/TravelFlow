@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
+import { useWishlist } from '../context/WishlistContext';
 import '../styles/navbar.css';
 
 const navLinks = [
@@ -15,6 +17,8 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { dark, toggleTheme } = useTheme();
+  const { items: wishlistItems } = useWishlist();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -53,6 +57,12 @@ export default function Navbar() {
           <Link to="/get-started" className="nav-cta">
             Get Started
           </Link>
+          <Link to="/wishlist" className="nav-wishlist-btn" title="Wishlist">
+            ♥{wishlistItems.length > 0 && <span className="nav-wishlist-count">{wishlistItems.length}</span>}
+          </Link>
+          <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle dark mode" title={dark ? 'Light mode' : 'Dark mode'}>
+            {dark ? '☀️' : '🌙'}
+          </button>
         </div>
 
         <button
@@ -84,6 +94,14 @@ export default function Navbar() {
         <Link to="/get-started" className="btn btn-primary btn-sm" onClick={handleNavClick}>
           Get Started
         </Link>
+        <div className="mobile-menu-actions">
+          <Link to="/wishlist" className="nav-wishlist-btn" onClick={handleNavClick} title="Wishlist">
+            ♥{wishlistItems.length > 0 && <span className="nav-wishlist-count">{wishlistItems.length}</span>}
+          </Link>
+          <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle dark mode">
+            {dark ? '☀️' : '🌙'}
+          </button>
+        </div>
       </div>
     </nav>
   );
