@@ -11,53 +11,133 @@ import '../styles/flight-details.css';
 
 const GST_RATE = 0.18;
 
+// ===== AIRCRAFT-SPECIFIC SEAT CONFIGS =====
+const aircraftLayouts = {
+  'Boeing 777': {
+    economy:          { rows: 38, cols: ['A','B','C','','D','E','F','','G','H','J'], exitRows: [1,14,26], label: 'Economy' },
+    'premium-economy': { rows: 10, cols: ['A','B','','C','D','','E','F'], exitRows: [1,5], label: 'Premium Economy' },
+    business:          { rows: 9,  cols: ['A','','C','','D','','F'], exitRows: [1], label: 'Business' },
+    first:             { rows: 4,  cols: ['A','','','B','','','C'], exitRows: [1], label: 'First Class' },
+  },
+  'Boeing 787 Dreamliner': {
+    economy:          { rows: 33, cols: ['A','B','C','','D','E','F','','G','H','J'], exitRows: [1,12,24], label: 'Economy' },
+    'premium-economy': { rows: 8,  cols: ['A','B','','C','D','','E','F'], exitRows: [1,5], label: 'Premium Economy' },
+    business:          { rows: 7,  cols: ['A','','C','','F','','H'], exitRows: [1], label: 'Business' },
+    first:             { rows: 3,  cols: ['A','','B'], exitRows: [1], label: 'First Class' },
+  },
+  'Airbus A380': {
+    economy:          { rows: 44, cols: ['A','B','C','','D','E','F','G','','H','J','K'], exitRows: [1,16,30,40], label: 'Economy' },
+    'premium-economy': { rows: 12, cols: ['A','B','C','','D','E','','F','G','H'], exitRows: [1,7], label: 'Premium Economy' },
+    business:          { rows: 12, cols: ['A','','D','','F','','K'], exitRows: [1,7], label: 'Business' },
+    first:             { rows: 7,  cols: ['A','','','E','','','K'], exitRows: [1], label: 'First Class — Suite' },
+  },
+  'Airbus A350': {
+    economy:          { rows: 34, cols: ['A','B','C','','D','E','F','','G','H','J'], exitRows: [1,12,24], label: 'Economy' },
+    'premium-economy': { rows: 9,  cols: ['A','B','','C','D','','E','F'], exitRows: [1,5], label: 'Premium Economy' },
+    business:          { rows: 8,  cols: ['A','','D','','G','','K'], exitRows: [1], label: 'Business' },
+    first:             { rows: 4,  cols: ['A','','','B'], exitRows: [1], label: 'First Class' },
+  },
+  'Boeing 737 MAX': {
+    economy:          { rows: 27, cols: ['A','B','C','','D','E','F'], exitRows: [1,13], label: 'Economy' },
+    'premium-economy': { rows: 6,  cols: ['A','B','','C','D'], exitRows: [1], label: 'Premium Economy' },
+    business:          { rows: 4,  cols: ['A','','C','','D'], exitRows: [1], label: 'Business' },
+    first:             { rows: 2,  cols: ['A','','B'], exitRows: [1], label: 'First Class' },
+  },
+};
+
+const defaultLayout = aircraftLayouts['Boeing 777'];
+
 // ===== SEAT MAP GENERATOR =====
 function generateSeatMap(flight, cabinClass) {
+  // seeded random from flight id
   const seed = flight.id.split('-').pop();
   let s = parseInt(seed, 10) || 42;
   const rand = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
 
-  const configs = {
-    economy: { rows: 30, cols: ['A', 'B', 'C', '', 'D', 'E', 'F'], price: flight.basePriceUSD, label: 'Economy' },
-    'premium-economy': { rows: 10, cols: ['A', 'B', '', 'C', 'D'], price: flight.basePriceUSD * 1.6, label: 'Premium Economy' },
-    business: { rows: 8, cols: ['A', '', 'B', '', 'C'], price: flight.basePriceUSD * 3, label: 'Business' },
-    first: { rows: 4, cols: ['A', '', 'B'], price: flight.basePriceUSD * 5.5, label: 'First Class' },
-  };
+  // Pick aircraft-specific layout
+  const layout = aircraftLayouts[flight.aircraft] || defaultLayout;
+  const config = layout[cabinClass] || layout.economy;
 
-  const config = configs[cabinClass] || configs.economy;
+  // Derive the real occupancy rate from the flight's capacity data
+  const occupancyRate = Math.min(0.92, flight.capacity.booked / flight.capacity.total);
+
+  // Price adjusters unique to the flight  (stops, duration, airline rating)
+  const durationHours = parseFloat(flight.duration) || 4;
+  const ratingFactor   = (flight.airline.rating || 4.0) / 4.0;          // higher-rated → slightly pricier
+  const stopDiscount   = flight.stops === 0 ? 1 : 1 - flight.stops * 0.04; // nonstop sells at full price
+  const cabinMultiplier = cabinClasses.find(c => c.id === cabinClass)?.multiplier || 1;
+  const bPrice = flight.basePriceUSD * cabinMultiplier * ratingFactor * stopDiscount;
+
+  const seatsPerRow = config.cols.filter(c => c !== '').length;
+  const exitRowsSet = new Set(config.exitRows);
+
   const sections = [];
-
-  // Generate main cabin
   const rows = [];
+  let totalGenerated = 0;
+  let totalOccupied  = 0;
+
   for (let r = 1; r <= config.rows; r++) {
+    const isExit = exitRowsSet.has(r);
+    const isFront = r <= Math.max(2, Math.floor(config.rows * 0.12));
+    const isRear  = r >= config.rows - 1;
+
     const seats = config.cols.map((col) => {
       if (col === '') return { type: 'aisle' };
       const seatId = `${r}${col}`;
-      const isOccupied = rand() < 0.45; // ~45% occupied
-      const isWindow = col === config.cols[0] || col === config.cols[config.cols.length - 1];
-      const isExit = r === 1 || r === Math.ceil(config.rows / 2);
-      let seatPrice = config.price;
-      if (isWindow) seatPrice *= 1.05;
-      if (isExit) seatPrice *= 1.12;
-      if (r <= 3) seatPrice *= 1.08; // front rows premium
+      totalGenerated++;
+
+      // Occupancy varies by position (front & window fill faster)
+      const colCols = config.cols.filter(c => c !== '');
+      const isWindow = col === colCols[0] || col === colCols[colCols.length - 1];
+      const isMiddle = !isWindow && col !== colCols[Math.floor(colCols.length / 2)];
+      let occChance = occupancyRate;
+      if (isFront) occChance += 0.1;
+      if (isWindow) occChance += 0.05;
+      if (isMiddle) occChance -= 0.06;
+      if (isRear) occChance -= 0.08;
+      occChance = Math.max(0.15, Math.min(0.95, occChance));
+      const isOccupied = rand() < occChance;
+      if (isOccupied) totalOccupied++;
+
+      // price
+      let seatPrice = bPrice;
+      if (isWindow) seatPrice *= 1.06;
+      if (isExit)   seatPrice *= 1.14;
+      if (isFront)  seatPrice *= 1.10;
+      if (isRear)   seatPrice *= 0.95;
 
       return {
-        type: 'seat',
-        id: seatId,
-        row: r,
-        col,
+        type: 'seat', id: seatId, row: r, col,
         status: isOccupied ? 'occupied' : 'available',
-        isWindow,
-        isExit,
+        isWindow, isExit,
         price: Math.round(seatPrice),
-        category: isExit ? 'exit' : (r <= 3 ? 'premium' : 'standard'),
+        category: isExit ? 'exit' : isFront ? 'premium' : 'standard',
       };
     });
-    rows.push({ row: r, seats, isExit: r === 1 || r === Math.ceil(config.rows / 2) });
+    rows.push({ row: r, seats, isExit });
   }
 
   sections.push({ name: config.label, rows });
-  return { sections, config };
+
+  return {
+    sections, config,
+    stats: {
+      totalSeats: totalGenerated,
+      occupied: totalOccupied,
+      available: totalGenerated - totalOccupied,
+      occupancyPct: Math.round((totalOccupied / totalGenerated) * 100),
+      seatsPerRow,
+    },
+  };
+}
+
+// Derive maximum bookable passengers for a flight + cabin
+function getMaxPassengers(flight, cabinClass) {
+  const layout = aircraftLayouts[flight.aircraft] || defaultLayout;
+  const config = layout[cabinClass] || layout.economy;
+  const seatsPerRow = config.cols.filter(c => c !== '').length;
+  // max passengers = one full row of the chosen cabin, capped at 9
+  return Math.min(9, seatsPerRow);
 }
 
 export default function FlightDetails() {
@@ -77,6 +157,13 @@ export default function FlightDetails() {
   const [bookingForm, setBookingForm] = useState({ name: '', email: '', phone: '', date: '' });
   const [bookingId, setBookingId] = useState('');
   const [boardingInfo, setBoardingInfo] = useState(null);
+
+  // Max passengers derived from flight's aircraft + cabin layout
+  const maxPax = useMemo(() => flight ? getMaxPassengers(flight, cabinClass) : 6, [flight, cabinClass]);
+  // Clamp passengers when cabin changes
+  useEffect(() => {
+    if (passengers > maxPax) setPassengers(maxPax);
+  }, [maxPax]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const pageRef = useRef(null);
 
@@ -114,7 +201,7 @@ export default function FlightDetails() {
   }, [flight]);
 
   // Reset seats on class change
-  useEffect(() => { setSelectedSeats([]); }, [cabinClass]);
+  useEffect(() => { setSelectedSeats([]); setPassengers(1); }, [cabinClass]);
 
   // Handle seat click
   const toggleSeat = useCallback((seat) => {
@@ -384,6 +471,41 @@ export default function FlightDetails() {
                     <p>Select up to {passengers} seat{passengers > 1 ? 's' : ''} for your journey</p>
                   </div>
 
+                  {/* Flight-specific slot banner */}
+                  <div className="fd-slot-banner">
+                    <div className="fd-slot-aircraft">
+                      <span className="fd-slot-aircraft-icon">🛩️</span>
+                      <div>
+                        <strong>{flight.aircraft}</strong>
+                        <span className="fd-slot-aircraft-sub">{flight.airline.name} · {flight.flightNumber}</span>
+                      </div>
+                    </div>
+                    <div className="fd-slot-stats">
+                      <div className="fd-slot-stat">
+                        <span className="fd-slot-stat-num">{seatMap?.stats.available ?? '—'}</span>
+                        <span className="fd-slot-stat-label">Seats Open</span>
+                      </div>
+                      <div className="fd-slot-stat">
+                        <span className="fd-slot-stat-num">{seatMap?.stats.occupancyPct ?? 0}%</span>
+                        <span className="fd-slot-stat-label">Filled</span>
+                      </div>
+                      <div className="fd-slot-stat">
+                        <span className="fd-slot-stat-num">{seatMap?.stats.seatsPerRow ?? 0}</span>
+                        <span className="fd-slot-stat-label">Per Row</span>
+                      </div>
+                      <div className="fd-slot-stat">
+                        <span className="fd-slot-stat-num">{maxPax}</span>
+                        <span className="fd-slot-stat-label">Max Book</span>
+                      </div>
+                    </div>
+                    {seatMap && (
+                      <div className="fd-slot-bar">
+                        <div className="fd-slot-bar-fill" style={{ width: `${seatMap.stats.occupancyPct}%` }} />
+                        <span className="fd-slot-bar-text">{seatMap.stats.occupied} booked / {seatMap.stats.totalSeats} total</span>
+                      </div>
+                    )}
+                  </div>
+
                   {/* Controls */}
                   <div className="fd-seatmap-controls">
                     <div className="fd-control-group">
@@ -395,9 +517,9 @@ export default function FlightDetails() {
                       </select>
                     </div>
                     <div className="fd-control-group">
-                      <label>Passengers</label>
+                      <label>Passengers (max {maxPax})</label>
                       <select value={passengers} onChange={(e) => { setPassengers(Number(e.target.value)); setSelectedSeats([]); }}>
-                        {[1, 2, 3, 4, 5, 6].map((n) => (
+                        {Array.from({ length: maxPax }, (_, i) => i + 1).map((n) => (
                           <option key={n} value={n}>{n} Pax</option>
                         ))}
                       </select>

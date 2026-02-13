@@ -438,6 +438,103 @@
   margin-bottom: 20px;
 }
 
+/* Slot Banner — unique-per-flight info strip */
+.fd-slot-banner {
+  background: linear-gradient(135deg, #f0f7ff, #eef6ff);
+  border: 1.5px solid rgba(47, 128, 237, 0.15);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fd-slot-aircraft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fd-slot-aircraft-icon {
+  font-size: 1.8rem;
+}
+
+.fd-slot-aircraft strong {
+  display: block;
+  font-size: 1rem;
+  color: var(--dark);
+}
+
+.fd-slot-aircraft-sub {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--gray);
+}
+
+.fd-slot-stats {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.fd-slot-stat {
+  flex: 1 1 0;
+  min-width: 72px;
+  background: var(--white);
+  border-radius: 12px;
+  padding: 10px 8px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fd-slot-stat-num {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--primary-blue);
+}
+
+.fd-slot-stat-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--gray);
+}
+
+.fd-slot-bar {
+  position: relative;
+  height: 22px;
+  background: #e5e7eb;
+  border-radius: 11px;
+  overflow: hidden;
+}
+
+.fd-slot-bar-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 11px;
+  background: linear-gradient(90deg, var(--primary-blue), var(--light-blue));
+  transition: width 0.6s ease;
+}
+
+.fd-slot-bar-text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--dark);
+  mix-blend-mode: normal;
+  text-shadow: 0 0 4px rgba(255,255,255,0.9);
+}
+
 /* Controls */
 .fd-seatmap-controls {
   display: flex;
@@ -1609,6 +1706,24 @@
     padding: 20px;
   }
 
+  .fd-slot-banner {
+    padding: 16px 18px;
+    gap: 12px;
+  }
+
+  .fd-slot-stats {
+    gap: 6px;
+  }
+
+  .fd-slot-stat {
+    min-width: 60px;
+    padding: 8px 6px;
+  }
+
+  .fd-slot-stat-num {
+    font-size: 1rem;
+  }
+
   .fd-seatmap-controls {
     gap: 10px;
   }
@@ -1707,6 +1822,45 @@
   .fd-seatmap-area {
     padding: 16px;
     border-radius: 18px;
+  }
+
+  .fd-slot-banner {
+    padding: 14px;
+    border-radius: 12px;
+    gap: 10px;
+  }
+
+  .fd-slot-aircraft-icon {
+    font-size: 1.4rem;
+  }
+
+  .fd-slot-aircraft strong {
+    font-size: 0.88rem;
+  }
+
+  .fd-slot-stats {
+    gap: 4px;
+  }
+
+  .fd-slot-stat {
+    min-width: 56px;
+    padding: 7px 4px;
+  }
+
+  .fd-slot-stat-num {
+    font-size: 0.95rem;
+  }
+
+  .fd-slot-stat-label {
+    font-size: 0.55rem;
+  }
+
+  .fd-slot-bar {
+    height: 18px;
+  }
+
+  .fd-slot-bar-text {
+    font-size: 0.6rem;
   }
 
   .fd-seat {

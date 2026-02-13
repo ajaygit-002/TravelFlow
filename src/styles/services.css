@@ -257,9 +257,10 @@
 /* ===== HOW IT WORKS — PROCESS ===== */
 .svc-process {
   background: var(--white);
+  overflow: hidden;
 }
 
-/* Centered header — matches "Why Choose Us" style */
+/* Centered header */
 .svc-process-header {
   max-width: 620px;
   margin: 0 auto 56px;
@@ -288,22 +289,23 @@
   text-align: center;
 }
 
+/* Track — horizontal by default */
 .svc-process-track {
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 28px;
-  padding-top: 40px;
-  max-width: 1100px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  max-width: 1200px;
   margin: 0 auto;
+  padding-top: 20px;
 }
 
+/* Horizontal connector line */
 .svc-process-line {
   position: absolute;
-  top: 78px;
-  left: calc(50px + 10px);
-  right: calc(50px + 10px);
+  top: 82px;
+  left: 12%;
+  right: 12%;
   height: 3px;
   background: #e5e7eb;
   border-radius: 2px;
@@ -318,61 +320,96 @@
   border-radius: 2px;
   transform-origin: left;
 }
-/* this */
+
+/* Individual step */
 .svc-step {
   position: relative;
   z-index: 1;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   will-change: transform, opacity;
-  flex: 1;
-  max-width: 240px;
+  padding: 0 8px;
 }
 
+/* Step connector arrow (horizontal, hidden on mobile) */
+.svc-step-connector {
+  display: none;
+}
+
+/* Step number */
 .svc-step-number {
   font-family: 'Poppins', sans-serif;
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--primary-blue);
-  letter-spacing: 1.5px;
+  letter-spacing: 2px;
   margin-bottom: 10px;
-  opacity: 0.5;
+  opacity: 0.45;
+}
+
+/* Icon wrapper with badge */
+.svc-step-icon-wrap {
+  position: relative;
+  margin-bottom: 18px;
 }
 
 .svc-step-icon {
-  width: 72px;
-  height: 72px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  background: var(--white);
+  background: linear-gradient(145deg, #f8faff, #fff);
   border: 3px solid #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
-  margin: 0 auto 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  font-size: 2rem;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+  transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
   position: relative;
+}
+
+.svc-step-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 10px rgba(47, 128, 237, 0.35);
+  border: 2px solid var(--white);
 }
 
 .svc-step:hover .svc-step-icon {
   border-color: var(--primary-blue);
-  box-shadow: 0 8px 30px rgba(47, 128, 237, 0.15);
-  transform: translateY(-6px) scale(1.08);
+  box-shadow: 0 10px 36px rgba(47, 128, 237, 0.18);
+  transform: translateY(-8px) scale(1.08);
+}
+
+.svc-step:hover .svc-step-badge {
+  transform: scale(1.15);
 }
 
 .svc-step-title {
-  font-size: 1.08rem;
-  font-weight: 700;
+  font-size: 1.12rem;
+  font-weight: 800;
   color: var(--dark);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .svc-step-desc {
-  font-size: 0.84rem;
+  font-size: 0.85rem;
   color: var(--gray);
-  line-height: 1.6;
-  max-width: 180px;
+  line-height: 1.65;
+  max-width: 240px;
   margin: 0 auto;
 }
 
@@ -640,15 +677,13 @@
   }
 
   .svc-process-track {
-    flex-wrap: wrap;
-    justify-content: center;
+    grid-template-columns: repeat(2, 1fr);
     gap: 40px 28px;
     padding-top: 20px;
   }
 
   .svc-step {
-    flex: 0 0 calc(50% - 20px);
-    max-width: calc(50% - 20px);
+    padding: 0 4px;
   }
 
   .svc-process-line {
@@ -657,6 +692,27 @@
 
   .svc-process-header {
     margin-bottom: 40px;
+  }
+
+  .svc-step-title {
+    font-size: 1.05rem;
+  }
+
+  .svc-step-desc {
+    font-size: 0.82rem;
+    max-width: 220px;
+  }
+
+  .svc-step-icon {
+    width: 72px;
+    height: 72px;
+    font-size: 1.8rem;
+  }
+
+  .svc-step-badge {
+    width: 24px;
+    height: 24px;
+    font-size: 0.68rem;
   }
 
   .svc-stats-grid {
@@ -695,6 +751,26 @@
     padding: 14px 28px;
     font-size: 0.95rem;
   }
+
+  .svc-process-track {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px 18px;
+  }
+
+  .svc-step-icon {
+    width: 68px;
+    height: 68px;
+    font-size: 1.65rem;
+  }
+
+  .svc-step-desc {
+    font-size: 0.8rem;
+    max-width: 200px;
+  }
+
+  .svc-step-title {
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -719,14 +795,69 @@
   }
 
   .svc-process-track {
-    flex-direction: column;
-    align-items: center;
-    gap: 36px;
+    grid-template-columns: 1fr;
+    gap: 0;
+    max-width: 440px;
+    margin: 0 auto;
+    padding-top: 0;
+    position: relative;
+  }
+
+  /* Vertical timeline line */
+  .svc-process-track::before {
+    content: '';
+    position: absolute;
+    top: 40px;
+    bottom: 40px;
+    left: 36px;
+    width: 3px;
+    background: linear-gradient(180deg, var(--primary-blue), var(--light-blue), var(--accent-orange));
+    border-radius: 2px;
+    z-index: 0;
   }
 
   .svc-step {
-    flex: 0 0 100%;
-    max-width: 320px;
+    flex-direction: row;
+    text-align: left;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px 0;
+  }
+
+  .svc-step-number {
+    display: none;
+  }
+
+  .svc-step-icon-wrap {
+    flex-shrink: 0;
+    margin-bottom: 0;
+  }
+
+  .svc-step-icon {
+    width: 72px;
+    height: 72px;
+    font-size: 1.7rem;
+    background: var(--white);
+    border: 3px solid var(--primary-blue);
+  }
+
+  .svc-step-badge {
+    top: -2px;
+    right: -2px;
+  }
+
+  .svc-step-desc {
+    margin: 0;
+    max-width: 100%;
+  }
+
+  .svc-step-title {
+    font-size: 1.08rem;
+  }
+
+  /* Hide horizontal connector arrow — mobile gets vertical timeline */
+  .svc-step-connector {
+    display: none !important;
   }
 
   .svc-process-header {
@@ -767,5 +898,46 @@
   .svc-cta-buttons .btn-lg {
     width: 100%;
     max-width: 280px;
+  }
+}
+@media (max-width: 360px) {
+  .svc-process-track::before {
+    left: 28px;
+  }
+
+  .svc-step {
+    gap: 14px;
+    padding: 16px 0;
+  }
+
+  .svc-step-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 1.4rem;
+    border-width: 2px;
+  }
+
+  .svc-step-badge {
+    width: 20px;
+    height: 20px;
+    font-size: 0.6rem;
+  }
+
+  .svc-step-title {
+    font-size: 0.95rem;
+  }
+
+  .svc-step-desc {
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+
+  .svc-process-header {
+    margin-bottom: 24px;
+  }
+
+  .svc-process-tag {
+    font-size: 0.68rem;
+    padding: 5px 14px;
   }
 }

@@ -40,10 +40,10 @@ const coreServices = [
 ];
 
 const processSteps = [
-  { icon: '🔍', title: 'Search', desc: '' },
-  { icon: '📋', title: 'Compare', desc: '' },
-  { icon: '💳', title: 'Book', desc: '' },
-  { icon: '🎉', title: 'Travel', desc: '' },
+  { icon: '🔍', title: 'Search', desc: 'Enter your dream destination, choose dates, and let our smart engine find the best routes and deals in seconds.' },
+  { icon: '📋', title: 'Compare', desc: 'View side-by-side options with transparent pricing, airline ratings, layovers, and traveler reviews at a glance.' },
+  { icon: '💳', title: 'Book', desc: 'Select your perfect flight, pick seats, and complete secure checkout — no hidden fees, ever.' },
+  { icon: '🎉', title: 'Travel', desc: 'Get your e-ticket instantly, receive real-time updates, and enjoy a seamless journey from gate to gate.' },
 ];
 
 const stats = [
@@ -375,10 +375,14 @@ export default function Services() {
             </div>
             {processSteps.map((step, i) => (
               <div className="svc-step" key={i}>
-                <div className="svc-step-number">{String(i + 1).padStart(3, '0')}</div>
-                <div className="svc-step-icon">{step.icon}</div>
+                <div className="svc-step-number">{String(i + 1).padStart(2, '0')}</div>
+                <div className="svc-step-icon-wrap">
+                  <div className="svc-step-icon">{step.icon}</div>
+                  <div className="svc-step-badge">{i + 1}</div>
+                </div>
                 <h4 className="svc-step-title">{step.title}</h4>
                 <p className="svc-step-desc">{step.desc}</p>
+                {i < processSteps.length - 1 && <div className="svc-step-connector" />}
               </div>
             ))}
           </div>
