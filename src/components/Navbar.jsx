@@ -10,6 +10,7 @@ const navLinks = [
   { name: 'Flights', path: '/flights' },
   { name: 'Destinations', path: '/destinations' },
   { name: 'Currencies', path: '/currencies' },
+  { name: 'My Bookings', path: '/my-bookings' },
   { name: 'Contact', path: '/contact' },
 ];
 

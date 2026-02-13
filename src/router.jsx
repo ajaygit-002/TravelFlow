@@ -20,6 +20,7 @@ const FlightBooking = lazy(() => import('./pages/FlightBooking'));
 const FlightDetails = lazy(() => import('./pages/FlightDetails'));
 const TicketView = lazy(() => import('./pages/TicketView'));
 const Wishlist = lazy(() => import('./pages/Wishlist'));
+const MyBookings = lazy(() => import('./pages/MyBookings'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function SuspenseWrap({ children }) {
@@ -47,6 +48,7 @@ const router = createBrowserRouter([
       { path: 'flight/:flightId', element: <SuspenseWrap><FlightDetails /></SuspenseWrap> },
       { path: 'ticket', element: <SuspenseWrap><TicketView /></SuspenseWrap> },
       { path: 'wishlist', element: <SuspenseWrap><Wishlist /></SuspenseWrap> },
+      { path: 'my-bookings', element: <SuspenseWrap><MyBookings /></SuspenseWrap> },
       { path: '*', element: <SuspenseWrap><NotFound /></SuspenseWrap> },
     ],
   },

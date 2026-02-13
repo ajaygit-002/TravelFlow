@@ -6,6 +6,7 @@ import flights, { cabinClasses } from '../data/flights';
 import currencies from '../data/currencies';
 import PaymentGateway from '../components/PaymentGateway';
 import Footer from '../components/Footer';
+import { useBookingAuth } from '../context/BookingAuthContext';
 import { animateNavbar } from '../animations/gsapAnimations';
 import '../styles/flight-details.css';
 
@@ -143,6 +144,7 @@ function getMaxPassengers(flight, cabinClass) {
 export default function FlightDetails() {
   const { flightId } = useParams();
   const navigate = useNavigate();
+  const { saveBooking } = useBookingAuth();
 
   // Find the flight
   const flight = useMemo(() => flights.find((f) => f.id === flightId), [flightId]);
@@ -157,6 +159,7 @@ export default function FlightDetails() {
   const [bookingForm, setBookingForm] = useState({ name: '', email: '', phone: '', date: '' });
   const [bookingId, setBookingId] = useState('');
   const [boardingInfo, setBoardingInfo] = useState(null);
+  const [bookingPin, setBookingPin] = useState('');
 
   // Max passengers derived from flight's aircraft + cabin layout
   const maxPax = useMemo(() => flight ? getMaxPassengers(flight, cabinClass) : 6, [flight, cabinClass]);
@@ -265,7 +268,7 @@ export default function FlightDetails() {
     const gates = ['A1','A2','A3','A5','A7','B1','B2','B4','B6','C1','C3','C5','D2','D4','D8'];
     const terminals = ['T1','T2','T3','T4','T5'];
 
-    setBoardingInfo({
+    const newBoardingInfo = {
       gate: gates[Math.floor(Math.random() * gates.length)],
       terminal: terminals[Math.floor(Math.random() * terminals.length)],
       seat: selectedSeats.map((s) => s.id).join(', '),
@@ -276,14 +279,72 @@ export default function FlightDetails() {
       })(),
       zone: Math.floor(Math.random() * 5) + 1,
       sequence: String(Math.floor(Math.random() * 200) + 1).padStart(3, '0'),
+    };
+    setBoardingInfo(newBoardingInfo);
+
+    // Build QR / ticket URL for the saved booking
+    const ticketPayload = {
+      bookingId: id,
+      passenger: bookingForm.name,
+      email: bookingForm.email,
+      phone: bookingForm.phone,
+      flight: flight.flightNumber,
+      airline: flight.airline.name,
+      airlineLogo: flight.airline.logo,
+      aircraft: flight.aircraft,
+      from: `${flight.origin.code} - ${flight.origin.city}`,
+      to: `${flight.destination.code} - ${flight.destination.city}`,
+      departure: flight.departure,
+      arrival: flight.arrival,
+      duration: flight.duration,
+      stops: flight.stops,
+      date: bookingForm.date,
+      class: cabinClasses.find((c) => c.id === cabinClass)?.name,
+      seats: selectedSeats.map((s) => s.id).join(', '),
+      passengers,
+      totalPaid: `${currObj.symbol}${toLocal(grandTotal)} ${currency}`,
+      gate: newBoardingInfo.gate,
+      terminal: newBoardingInfo.terminal,
+      seat: newBoardingInfo.seat,
+      boardingTime: newBoardingInfo.boardingTime,
+      zone: newBoardingInfo.zone,
+      sequence: newBoardingInfo.sequence,
+    };
+    const encoded = btoa(encodeURIComponent(JSON.stringify(ticketPayload)));
+    const ticketUrl = `${window.location.origin}/ticket?d=${encoded}`;
+
+    // Save booking to context (localStorage) & get PIN
+    const pin = saveBooking({
+      bookingId: id,
+      email: bookingForm.email,
+      name: bookingForm.name,
+      phone: bookingForm.phone,
+      date: bookingForm.date,
+      airline: flight.airline.name,
+      airlineLogo: flight.airline.logo,
+      flightNumber: flight.flightNumber,
+      aircraft: flight.aircraft,
+      originCode: flight.origin.code,
+      originCity: flight.origin.city,
+      destCode: flight.destination.code,
+      destCity: flight.destination.city,
+      departure: flight.departure,
+      arrival: flight.arrival,
+      duration: flight.duration,
+      cabinClass: cabinClasses.find((c) => c.id === cabinClass)?.name || cabinClass,
+      seats: selectedSeats.map((s) => s.id).join(', '),
+      passengers,
+      totalPaid: `${currObj.symbol}${toLocal(grandTotal)} ${currency}`,
+      ticketUrl,
     });
+    setBookingPin(pin);
 
     gsap.to('.fd-main', { opacity: 0, scale: 0.95, duration: 0.3, onComplete: () => {
       setActiveStep('ticket');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       gsap.fromTo('.fd-main', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.5 });
     }});
-  }, [flight, selectedSeats]);
+  }, [flight, selectedSeats, bookingForm, cabinClass, passengers, currObj, toLocal, grandTotal, currency, saveBooking]);
 
   // QR data
   const qrData = useMemo(() => {
@@ -825,6 +886,17 @@ export default function FlightDetails() {
                 <div className="fd-ticket-icon">🎉</div>
                 <h2 className="fd-ticket-title">Booking Confirmed!</h2>
                 <p className="fd-ticket-sub">Your boarding pass is ready. Scan the QR to view online.</p>
+
+                {bookingPin && (
+                  <div className="fd-pin-banner">
+                    <div className="fd-pin-icon">🔐</div>
+                    <div className="fd-pin-text">
+                      <strong>Save your PIN to manage this booking later:</strong>
+                      <span className="fd-pin-code">{bookingPin}</span>
+                    </div>
+                    <p className="fd-pin-note">Use this PIN with your email at <em>My Bookings</em> to modify or cancel.</p>
+                  </div>
+                )}
 
                 <div className="fd-boarding-pass">
                   {/* Header */}

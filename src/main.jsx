@@ -5,6 +5,7 @@ import router from './router';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ThemeProvider } from './context/ThemeContext';
 import { WishlistProvider } from './context/WishlistContext';
+import { BookingAuthProvider } from './context/BookingAuthContext';
 import './styles/global.css';
 
 createRoot(document.getElementById('root')).render(
@@ -12,7 +13,9 @@ createRoot(document.getElementById('root')).render(
     <ErrorBoundary>
       <ThemeProvider>
         <WishlistProvider>
-          <RouterProvider router={router} />
+          <BookingAuthProvider>
+            <RouterProvider router={router} />
+          </BookingAuthProvider>
         </WishlistProvider>
       </ThemeProvider>
     </ErrorBoundary>

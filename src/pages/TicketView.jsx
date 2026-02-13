@@ -1,11 +1,17 @@
-import { useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
+import { useBookingAuth } from '../context/BookingAuthContext';
 import '../styles/ticket-view.css';
 
 export default function TicketView() {
   const [searchParams] = useSearchParams();
   const cardRef = useRef(null);
+  const { isAuthenticated, authUser } = useBookingAuth();
+
+  const [unlocked, setUnlocked] = useState(false);
+  const [verifyEmail, setVerifyEmail] = useState('');
+  const [verifyError, setVerifyError] = useState('');
 
   const ticket = useMemo(() => {
     try {
@@ -16,6 +22,24 @@ export default function TicketView() {
       return null;
     }
   }, [searchParams]);
+
+  // Auto-unlock if authenticated and email matches
+  useEffect(() => {
+    if (isAuthenticated && ticket && authUser?.email?.toLowerCase() === ticket.email?.toLowerCase()) {
+      setUnlocked(true);
+    }
+  }, [isAuthenticated, authUser, ticket]);
+
+  const handleVerify = (e) => {
+    e.preventDefault();
+    setVerifyError('');
+    if (!ticket) return;
+    if (verifyEmail.toLowerCase() === ticket.email?.toLowerCase()) {
+      setUnlocked(true);
+    } else {
+      setVerifyError('Email does not match the booking owner.');
+    }
+  };
 
   // Animate card on mount
   useEffect(() => {
@@ -50,6 +74,33 @@ export default function TicketView() {
           <h2>Invalid Ticket</h2>
           <p>This QR code doesn't contain valid booking information.</p>
           <Link to="/flights" className="tv-btn tv-btn-outline">Search Flights</Link>
+        </div>
+      </div>
+    );
+  }
+
+  /* ===== AUTH GATE — verify ownership ===== */
+  if (!unlocked) {
+    return (
+      <div className="tv-page">
+        <div className="tv-auth-gate">
+          <div className="tv-auth-icon">🔒</div>
+          <h2>Verify Your Identity</h2>
+          <p>Enter the email address used during booking to view this ticket.</p>
+          <form onSubmit={handleVerify} className="tv-auth-form">
+            <input
+              type="email"
+              placeholder="Enter booking email"
+              value={verifyEmail}
+              onChange={(e) => setVerifyEmail(e.target.value)}
+              required
+              className="tv-auth-input"
+            />
+            <button type="submit" className="tv-btn tv-btn-primary">🔓 Verify & View Ticket</button>
+          </form>
+          {verifyError && <p className="tv-auth-error">⚠️ {verifyError}</p>}
+          <p className="tv-auth-hint">Only the booking owner can view ticket details.</p>
+          <Link to="/my-bookings" className="tv-auth-link">Go to My Bookings →</Link>
         </div>
       </div>
     );
