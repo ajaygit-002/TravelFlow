@@ -636,6 +636,11 @@
 
 /* Center layout for Steps 2 & 3 */
 .fb-fullpage-center {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.fb-fullpage-center .fb-eticket-wrap {
   max-width: 680px;
   margin: 0 auto;
 }
@@ -993,12 +998,14 @@
 /* ===== PAYMENT WRAP ===== */
 .fb-payment-wrap {
   will-change: transform, opacity;
+  width: 100%;
 }
 
 .fb-payment-wrap .payment-gateway {
   border-radius: 0;
   box-shadow: none;
   padding: 0;
+  width: 100%;
 }
 
 /* ===== E-TICKET ===== */
