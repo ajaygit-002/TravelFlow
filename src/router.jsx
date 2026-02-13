@@ -17,6 +17,7 @@ const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./pages/TermsOfService'));
 const GetStarted = lazy(() => import('./pages/GetStarted'));
 const FlightBooking = lazy(() => import('./pages/FlightBooking'));
+const FlightDetails = lazy(() => import('./pages/FlightDetails'));
 const TicketView = lazy(() => import('./pages/TicketView'));
 const Wishlist = lazy(() => import('./pages/Wishlist'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
       { path: 'terms', element: <SuspenseWrap><TermsOfService /></SuspenseWrap> },
       { path: 'get-started', element: <SuspenseWrap><GetStarted /></SuspenseWrap> },
       { path: 'flights', element: <SuspenseWrap><FlightBooking /></SuspenseWrap> },
+      { path: 'flight/:flightId', element: <SuspenseWrap><FlightDetails /></SuspenseWrap> },
       { path: 'ticket', element: <SuspenseWrap><TicketView /></SuspenseWrap> },
       { path: 'wishlist', element: <SuspenseWrap><Wishlist /></SuspenseWrap> },
       { path: '*', element: <SuspenseWrap><NotFound /></SuspenseWrap> },

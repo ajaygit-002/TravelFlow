@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { QRCodeSVG } from 'qrcode.react';
@@ -15,6 +16,8 @@ gsap.registerPlugin(ScrollTrigger);
 const GST_RATE = 0.18;
 
 export default function FlightBooking() {
+  const navigate = useNavigate();
+
   // Search state
   const [origin, setOrigin] = useState('');
   const [destFilter, setDestFilter] = useState('');
@@ -480,7 +483,7 @@ export default function FlightBooking() {
                           {passengers > 1 ? `${passengers} pax · ` : ''}{cabinClasses.find((c) => c.id === cabinClass)?.name}
                         </div>
                       </div>
-                      <button className="fb-book-btn" onClick={() => handleSelectFlight(flight)}>
+                      <button className="fb-book-btn" onClick={() => navigate(`/flight/${flight.id}`)}>
                         Book Now
                       </button>
                     </div>
@@ -495,6 +498,243 @@ export default function FlightBooking() {
               <p>Try adjusting your search filters or select a different route.</p>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* ===== BOOK MY TICKET — HOW IT WORKS ===== */}
+      <section className="fb-howit section">
+        <div className="container">
+          <h2 className="section-title">🎫 Book My Ticket — It's Easy!</h2>
+          <p className="section-subtitle">Book flights in 3 simple steps, just like your favorite ticket platform</p>
+          <div className="fb-howit-steps">
+            {[
+              { num: '01', icon: '🏙️', title: 'Pick Your City', desc: 'Choose your departure & destination from popular cities below' },
+              { num: '02', icon: '✈️', title: 'Select a Flight', desc: 'Compare airlines, prices, stops & pick the best deal for you' },
+              { num: '03', icon: '🎟️', title: 'Book & Get Ticket', desc: 'Fill details, pay securely & get your e-boarding pass instantly' },
+            ].map((s) => (
+              <div className="fb-howit-step" key={s.num}>
+                <div className="fb-howit-num">{s.num}</div>
+                <div className="fb-howit-icon">{s.icon}</div>
+                <h3>{s.title}</h3>
+                <p>{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== BROWSE BY DESTINATION CITY ===== */}
+      <section className="fb-cities section">
+        <div className="container">
+          <h2 className="section-title">🌍 Browse Flights by City</h2>
+          <p className="section-subtitle">Click a destination to see all available flights instantly</p>
+          <div className="fb-cities-grid">
+            {destinations.map((dest) => {
+              const cityFlights = flights.filter((f) => f.destinationId === dest.id);
+              const cheapest = cityFlights.length > 0
+                ? Math.min(...cityFlights.map((f) => f.basePriceUSD))
+                : null;
+              const airlineCount = new Set(cityFlights.map((f) => f.airline.name)).size;
+              return (
+                <div
+                  className={`fb-city-card ${destFilter === dest.name || destFilter === cityFlights[0]?.destination?.city ? 'active' : ''}`}
+                  key={dest.id}
+                  onClick={() => {
+                    const cityName = cityFlights[0]?.destination?.city || dest.name;
+                    setDestFilter((prev) => prev === cityName ? '' : cityName);
+                    setOrigin('');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                >
+                  <div className="fb-city-img-wrap">
+                    <img src={dest.thumb} alt={dest.name} className="fb-city-img" loading="lazy" />
+                    <div className="fb-city-overlay">
+                      <span className="fb-city-flag">{dest.flag}</span>
+                    </div>
+                    {cheapest && (
+                      <div className="fb-city-price-badge">
+                        From {currObj.symbol}{toLocal(cheapest)}
+                      </div>
+                    )}
+                  </div>
+                  <div className="fb-city-info">
+                    <h3 className="fb-city-name">{dest.name}</h3>
+                    <p className="fb-city-country">{dest.country}</p>
+                    <div className="fb-city-stats">
+                      <span>✈️ {cityFlights.length} flights</span>
+                      <span>🏢 {airlineCount} airlines</span>
+                    </div>
+                    <div className="fb-city-tagline">{dest.tagline}</div>
+                    <button className="fb-city-book-btn">
+                      View Flights →
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== POPULAR ROUTES — Quick Book ===== */}
+      <section className="fb-routes section">
+        <div className="container">
+          <h2 className="section-title">🔥 Popular Routes — Quick Book</h2>
+          <p className="section-subtitle">Trending routes with the best deals. Click to book instantly!</p>
+          <div className="fb-routes-grid">
+            {(() => {
+              // Build unique routes with cheapest flight
+              const routeMap = {};
+              flights.forEach((f) => {
+                const key = `${f.origin.city}-${f.destination.city}`;
+                if (!routeMap[key] || f.basePriceUSD < routeMap[key].basePriceUSD) {
+                  routeMap[key] = f;
+                }
+              });
+              // Sort by price, show top 8
+              const topRoutes = Object.values(routeMap)
+                .sort((a, b) => a.basePriceUSD - b.basePriceUSD)
+                .slice(0, 8);
+
+              return topRoutes.map((flight) => (
+                <div className="fb-route-card" key={flight.id} onClick={() => navigate(`/flight/${flight.id}`)}>
+                  <div className="fb-route-card-header">
+                    <span className="fb-route-airline-logo">{flight.airline.logo}</span>
+                    <span className="fb-route-airline-name">{flight.airline.name}</span>
+                    <span className="fb-route-rating">⭐ {flight.airline.rating}</span>
+                  </div>
+                  <div className="fb-route-card-body">
+                    <div className="fb-route-from">
+                      <span className="fb-route-code">{flight.origin.code}</span>
+                      <span className="fb-route-city-name">{flight.origin.city}</span>
+                      <span className="fb-route-time">{flight.departure}</span>
+                    </div>
+                    <div className="fb-route-mid">
+                      <span className="fb-route-duration">{flight.duration}</span>
+                      <div className="fb-route-line-visual">
+                        <span className="fb-route-dot-s" />
+                        <span className="fb-route-dash" />
+                        <span className="fb-route-plane-icon">✈</span>
+                        <span className="fb-route-dash" />
+                        <span className="fb-route-dot-s" />
+                      </div>
+                      <span className="fb-route-stops-label">
+                        {flight.stops === 0 ? 'Nonstop' : `${flight.stops} stop${flight.stops > 1 ? 's' : ''}`}
+                      </span>
+                    </div>
+                    <div className="fb-route-to">
+                      <span className="fb-route-code">{flight.destination.code}</span>
+                      <span className="fb-route-city-name">{flight.destination.flag} {flight.destination.city}</span>
+                      <span className="fb-route-time">{flight.arrival}</span>
+                    </div>
+                  </div>
+                  <div className="fb-route-card-footer">
+                    <div className="fb-route-price">
+                      <span className="fb-route-price-label">Starting from</span>
+                      <span className="fb-route-price-amount">{currObj.symbol}{toLocal(flight.basePriceUSD)}</span>
+                    </div>
+                    <button className="fb-route-book-btn">Book Now</button>
+                  </div>
+                </div>
+              ));
+            })()}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== TRAVEL DEALS BANNER ===== */}
+      <section className="fb-deals section">
+        <div className="container">
+          <div className="fb-deals-banner">
+            <div className="fb-deals-content">
+              <span className="fb-deals-badge">LIMITED TIME OFFER</span>
+              <h2>✨ Flat 15% Off on First Flight Booking!</h2>
+              <p>Use code <strong>FLYEASY15</strong> at checkout. Valid on all airlines & routes.</p>
+              <div className="fb-deals-features">
+                <span>🔒 Secure Payment</span>
+                <span>📧 Instant E-Ticket</span>
+                <span>💯 Best Price Guarantee</span>
+                <span>↩️ Free Cancellation</span>
+              </div>
+            </div>
+            <div className="fb-deals-visual">
+              <span className="fb-deals-plane">✈️</span>
+              <span className="fb-deals-discount">15% OFF</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== BROWSE BY ORIGIN — Where are you flying from? ===== */}
+      <section className="fb-origins section">
+        <div className="container">
+          <h2 className="section-title">📍 Where Are You Flying From?</h2>
+          <p className="section-subtitle">Select your departure city to find the best flights</p>
+          <div className="fb-origins-grid">
+            {originCities.filter(Boolean).map((city) => {
+              const cityFlightsFromOrigin = flights.filter((f) => f.origin.city === city);
+              const destCount = new Set(cityFlightsFromOrigin.map((f) => f.destination.city)).size;
+              const originData = cityFlightsFromOrigin[0]?.origin;
+              return (
+                <div
+                  className={`fb-origin-card ${origin === city ? 'active' : ''}`}
+                  key={city}
+                  onClick={() => {
+                    setOrigin((prev) => prev === city ? '' : city);
+                    setDestFilter('');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                >
+                  <span className="fb-origin-flag">{originData?.flag || '🌐'}</span>
+                  <div className="fb-origin-info">
+                    <h4>{city}</h4>
+                    <p>{originData?.code || ''} · {originData?.country || ''}</p>
+                  </div>
+                  <div className="fb-origin-stats">
+                    <span>{cityFlightsFromOrigin.length} flights</span>
+                    <span>{destCount} destinations</span>
+                  </div>
+                  <button className="fb-origin-btn">Fly From Here →</button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== AIRLINES WE FLY WITH ===== */}
+      <section className="fb-airline-showcase section">
+        <div className="container">
+          <h2 className="section-title">🛫 Airlines We Fly With</h2>
+          <p className="section-subtitle">Trusted partners across the globe</p>
+          <div className="fb-airline-grid">
+            {airlines.map((al) => {
+              const alFlights = flights.filter((f) => f.airline.id === al.id);
+              return (
+                <div
+                  className={`fb-airline-card ${airlineFilter === al.name ? 'active' : ''}`}
+                  key={al.id}
+                  onClick={() => {
+                    setAirlineFilter((prev) => prev === al.name ? '' : al.name);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                >
+                  <span className="fb-al-logo">{al.logo}</span>
+                  <div className="fb-al-details">
+                    <h4>{al.name}</h4>
+                    <p>{al.flag} {al.country}</p>
+                  </div>
+                  <div className="fb-al-meta">
+                    <span className="fb-al-rating">⭐ {al.rating}</span>
+                    <span className="fb-al-flights">{alFlights.length} flights</span>
+                  </div>
+                  {al.alliance !== 'None' && (
+                    <span className="fb-al-alliance">{al.alliance}</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
