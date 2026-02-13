@@ -620,6 +620,7 @@ export default function FlightDetails() {
                   </div>
 
                   {/* Airplane shape */}
+                  <div className="fd-airplane-wrap">
                   <div className="fd-airplane">
                     <div className="fd-airplane-nose">
                       <div className="fd-airplane-nose-shape" />
@@ -680,6 +681,7 @@ export default function FlightDetails() {
                     <div className="fd-airplane-tail">
                       <div className="fd-airplane-tail-shape" />
                     </div>
+                  </div>
                   </div>
                 </div>
 

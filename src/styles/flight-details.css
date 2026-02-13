@@ -473,14 +473,12 @@
 }
 
 .fd-slot-stats {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 6px;
-  flex-wrap: wrap;
 }
 
 .fd-slot-stat {
-  flex: 1 1 0;
-  min-width: 72px;
   background: var(--white);
   border-radius: 12px;
   padding: 10px 8px;
@@ -489,6 +487,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
 }
 
 .fd-slot-stat-num {
@@ -627,11 +626,32 @@
 }
 
 /* ===== AIRPLANE ===== */
+.fd-airplane-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+}
+
+.fd-airplane-wrap::-webkit-scrollbar {
+  height: 6px;
+}
+
+.fd-airplane-wrap::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.fd-airplane-wrap::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
 .fd-airplane {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 400px;
+  min-width: fit-content;
   margin: 0 auto;
 }
 
@@ -1762,11 +1782,11 @@
   }
 
   .fd-slot-stats {
+    grid-template-columns: repeat(2, 1fr);
     gap: 6px;
   }
 
   .fd-slot-stat {
-    min-width: 60px;
     padding: 8px 6px;
   }
 
@@ -1778,14 +1798,28 @@
     gap: 10px;
   }
 
+  .fd-control-group {
+    flex: 1 1 calc(50% - 10px);
+  }
+
   .fd-seat {
-    width: 32px;
-    height: 32px;
-    font-size: 0.6rem;
+    width: 30px;
+    height: 30px;
+    font-size: 0.58rem;
   }
 
   .fd-aisle-gap {
-    width: 14px;
+    width: 12px;
+  }
+
+  .fd-row-num {
+    width: 20px;
+    font-size: 0.6rem;
+  }
+
+  .fd-col-label {
+    width: 30px;
+    font-size: 0.62rem;
   }
 
   .fd-seat-legend {
@@ -1870,14 +1904,18 @@
   }
 
   .fd-seatmap-area {
-    padding: 16px;
+    padding: 14px;
     border-radius: 18px;
   }
 
   .fd-slot-banner {
-    padding: 14px;
+    padding: 12px;
     border-radius: 12px;
     gap: 10px;
+  }
+
+  .fd-slot-aircraft {
+    gap: 8px;
   }
 
   .fd-slot-aircraft-icon {
@@ -1889,11 +1927,11 @@
   }
 
   .fd-slot-stats {
+    grid-template-columns: repeat(2, 1fr);
     gap: 4px;
   }
 
   .fd-slot-stat {
-    min-width: 56px;
     padding: 7px 4px;
   }
 
@@ -1913,35 +1951,53 @@
     font-size: 0.6rem;
   }
 
+  .fd-seatmap-controls {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .fd-control-group {
+    flex: 1 1 100%;
+  }
+
   .fd-seat {
-    width: 28px;
-    height: 28px;
-    font-size: 0.55rem;
+    width: 26px;
+    height: 26px;
+    font-size: 0.52rem;
     border-radius: 6px 6px 4px 4px;
   }
 
   .fd-aisle-gap {
-    width: 10px;
+    width: 8px;
   }
 
   .fd-row-num {
-    width: 20px;
-    font-size: 0.58rem;
+    width: 18px;
+    font-size: 0.55rem;
   }
 
   .fd-col-label {
-    width: 28px;
-    font-size: 0.6rem;
+    width: 26px;
+    font-size: 0.55rem;
+  }
+
+  .fd-seat-row {
+    gap: 2px;
+    margin-bottom: 2px;
   }
 
   .fd-airplane-nose-shape {
-    width: 90px;
-    height: 40px;
+    width: 80px;
+    height: 36px;
   }
 
   .fd-airplane-tail-shape {
-    width: 60px;
-    height: 30px;
+    width: 50px;
+    height: 26px;
+  }
+
+  .fd-airplane-body {
+    padding: 8px 10px;
   }
 
   .fd-legend-item {
@@ -1953,9 +2009,15 @@
     height: 16px;
   }
 
+  .fd-seat-legend {
+    gap: 8px;
+    padding: 8px 10px;
+    justify-content: center;
+  }
+
   .fd-control-group select {
-    padding: 8px 12px;
-    font-size: 0.82rem;
+    padding: 10px 12px;
+    font-size: 0.85rem;
   }
 
   .fd-summary-card {
@@ -2016,5 +2078,79 @@
   .fd-action-btn {
     padding: 12px 20px;
     font-size: 0.88rem;
+  }
+}
+
+/* 360px: Very small phones */
+@media (max-width: 360px) {
+  .fd-seat {
+    width: 22px;
+    height: 22px;
+    font-size: 0.48rem;
+    border-width: 1.5px;
+  }
+
+  .fd-aisle-gap {
+    width: 6px;
+  }
+
+  .fd-row-num {
+    width: 16px;
+    font-size: 0.5rem;
+  }
+
+  .fd-col-label {
+    width: 22px;
+    font-size: 0.5rem;
+  }
+
+  .fd-seat-row {
+    gap: 1px;
+    margin-bottom: 1px;
+  }
+
+  .fd-airplane-body {
+    padding: 6px 6px;
+  }
+
+  .fd-airplane-nose-shape {
+    width: 60px;
+    height: 28px;
+  }
+
+  .fd-airplane-tail-shape {
+    width: 40px;
+    height: 20px;
+  }
+
+  .fd-seatmap-area {
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  .fd-slot-banner {
+    padding: 10px;
+  }
+
+  .fd-summary-card {
+    padding: 14px;
+  }
+
+  .fd-selected-item {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .fd-selected-price {
+    font-size: 0.82rem;
+  }
+
+  .fd-price-row {
+    font-size: 0.82rem;
+  }
+
+  .fd-proceed-btn {
+    padding: 14px;
+    font-size: 0.9rem;
   }
 }
