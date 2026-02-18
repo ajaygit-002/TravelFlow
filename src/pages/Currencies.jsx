@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { Grid } from 'react-window';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import currencies, { regionColors, regions } from '../data/currencies';
@@ -6,10 +7,37 @@ import CurrencyCard from '../components/CurrencyCard';
 import Footer from '../components/Footer';
 import { animateNavbar } from '../animations/gsapAnimations';
 import '../styles/currencies.css';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Currencies() {
+  // Responsive grid state
+  const [gridDims, setGridDims] = useState(() => {
+    const width = typeof window !== 'undefined' ? window.innerWidth : 1200;
+    let columns = 4;
+    if (width < 600) columns = 1;
+    else if (width < 900) columns = 2;
+    else if (width < 1200) columns = 3;
+    return { width: Math.min(width - 40, 1200), columns };
+  });
+
+  // Defensive: ensure currencies is always an array
+  const safeCurrencies = Array.isArray(currencies) ? currencies : [];
+
+  // Update grid on resize
+  useEffect(() => {
+    function handleResize() {
+      const width = window.innerWidth;
+      let columns = 4;
+      if (width < 600) columns = 1;
+      else if (width < 900) columns = 2;
+      else if (width < 1200) columns = 3;
+      setGridDims({ width: Math.min(width - 40, 1200), columns });
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const [search, setSearch] = useState('');
   const [activeRegion, setActiveRegion] = useState('All');
   const [selectedCurrency, setSelectedCurrency] = useState(null);
@@ -104,7 +132,7 @@ export default function Currencies() {
 
   // Filtered currencies
   const filtered = useMemo(() => {
-    return currencies.filter((c) => {
+    return safeCurrencies.filter((c) => {
       const matchRegion = activeRegion === 'All' || c.region === activeRegion;
       const q = search.toLowerCase();
       const matchSearch =
@@ -115,7 +143,7 @@ export default function Currencies() {
         c.symbol.includes(q);
       return matchRegion && matchSearch;
     });
-  }, [search, activeRegion]);
+  }, [search, activeRegion, safeCurrencies]);
 
   // Smooth count badge pulse on filter change
   useEffect(() => {
@@ -320,21 +348,21 @@ export default function Currencies() {
 
   // Converter
   const convertedValue = useMemo(() => {
-    const fromRate = currencies.find((c) => c.code === convertFrom)?.rate || 1;
-    const toRate = currencies.find((c) => c.code === convertTo)?.rate || 1;
+    const fromRate = safeCurrencies.find((c) => c.code === convertFrom)?.rate || 1;
+    const toRate = safeCurrencies.find((c) => c.code === convertTo)?.rate || 1;
     const amt = parseFloat(convertAmount) || 0;
     return ((amt / fromRate) * toRate).toFixed(4);
-  }, [convertAmount, convertFrom, convertTo]);
+  }, [convertAmount, convertFrom, convertTo, safeCurrencies]);
 
   // Multi-currency quick convert results
   const quickConvertResults = useMemo(() => {
     const amt = parseFloat(convertAmount) || 0;
     if (amt <= 0) return [];
-    const fromRate = currencies.find((c) => c.code === convertFrom)?.rate || 1;
+    const fromRate = safeCurrencies.find((c) => c.code === convertFrom)?.rate || 1;
     return popularCodes
       .filter((code) => code !== convertFrom)
       .map((code) => {
-        const target = currencies.find((c) => c.code === code);
+        const target = safeCurrencies.find((c) => c.code === code);
         if (!target) return null;
         const converted = (amt / fromRate) * target.rate;
         return {
@@ -346,7 +374,7 @@ export default function Currencies() {
         };
       })
       .filter(Boolean);
-  }, [convertAmount, convertFrom]);
+  }, [convertAmount, convertFrom, safeCurrencies]);
 
   // ===== DETAIL PANEL — CINEMATIC OPEN =====
   const handleSelect = useCallback((currency) => {
@@ -600,16 +628,36 @@ export default function Currencies() {
 
             {/* Right: 3D card grid */}
             <div>
-              {filtered.length > 0 ? (
-                <div className="currency-grid" ref={gridRef}>
-                  {filtered.map((currency, i) => (
-                    <CurrencyCard
-                      key={currency.code}
-                      currency={currency}
-                      index={i}
-                      onSelect={handleSelect}
-                    />
-                  ))}
+              {Array.isArray(filtered) && gridDims && typeof gridDims.columns === 'number' && filtered.length > 0 && gridDims.columns > 0 ? (
+                <div className="currency-grid" style={{ height: '70vh', minHeight: 350 }}>
+                  {/* Error boundary for Grid rendering */}
+                  <ErrorBoundary>
+                    <Grid
+                      columnCount={gridDims.columns}
+                      columnWidth={270}
+                      height={Math.max(350, typeof window !== 'undefined' ? Math.floor(window.innerHeight * 0.7) : 500)}
+                      rowCount={Math.ceil(filtered.length / gridDims.columns)}
+                      rowHeight={260}
+                      width={gridDims.width}
+                    >
+                      {({ columnIndex, rowIndex, style }) => {
+                        if (!Array.isArray(filtered) || !gridDims || typeof gridDims.columns !== 'number') return null;
+                        const idx = rowIndex * gridDims.columns + columnIndex;
+                        if (!filtered || idx >= filtered.length) return null;
+                        const currency = filtered[idx];
+                        if (!currency) return null;
+                        return (
+                          <div style={style} key={currency.code}>
+                            <CurrencyCard
+                              currency={currency}
+                              index={idx}
+                              onSelect={handleSelect}
+                            />
+                          </div>
+                        );
+                      }}
+                    </Grid>
+                  </ErrorBoundary>
                 </div>
               ) : (
                 <div className="no-results">

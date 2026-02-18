@@ -1,15 +1,19 @@
 
 import { useNavigate } from 'react-router-dom';
 import '../styles/cards.css';
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
+
 
 
 const DestinationCard = memo(function DestinationCard({ dest, index }) {
   const navigate = useNavigate();
-
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     navigate(`/destination/${dest.id}`);
-  };
+  }, [navigate, dest.id]);
+
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Enter' || e.key === ' ') handleClick();
+  }, [handleClick]);
 
   return (
     <article
@@ -18,9 +22,7 @@ const DestinationCard = memo(function DestinationCard({ dest, index }) {
       data-index={index}
       tabIndex={0}
       aria-label={`View details for ${dest.name}`}
-      onKeyDown={e => {
-        if (e.key === 'Enter' || e.key === ' ') handleClick();
-      }}
+      onKeyDown={handleKeyDown}
     >
       {/* Image section */}
       <div className="dest-card-img-wrap">
@@ -49,7 +51,7 @@ const DestinationCard = memo(function DestinationCard({ dest, index }) {
         {dest.highlights && dest.highlights.length > 0 && (
           <ul className="dest-card-highlights" aria-label="Highlights">
             {dest.highlights.slice(0, 3).map((h, i) => (
-              <li key={i} className="dest-card-highlight-item">
+              <li key={h.title + i} className="dest-card-highlight-item">
                 <span className="dest-card-highlight-icon" aria-hidden="true">{h.icon}</span>
                 <span className="dest-card-highlight-title">{h.title}</span>: <span className="dest-card-highlight-text">{h.text}</span>
               </li>
